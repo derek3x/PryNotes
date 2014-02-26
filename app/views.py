@@ -86,7 +86,7 @@ def htmlwork(doc):
     if doc.find('<p>') != -1 or doc.find('<h') != -1 or doc.find('<div>') != -1 or doc.find('<script>') != -1 or doc.find('onclick=') != -1:
         soup = BeautifulSoup.BeautifulSoup(doc)       
         for comment in soup.findAll(text=lambda text: isinstance(text, Comment)):
-            # Get rid of comments
+            # Get rid of comments (ironic comment)
             comment.extract()     
         for tag in soup.findAll(True):
             if tag.name not in validTags:
@@ -273,26 +273,6 @@ def select_shared_note():
     return jsonify({
         'text': decrypted })         
 
-"""#==============================Share a NoteBook=============================#    
-@app.route('/share_notebook/<email>/<int:notebookid>')
-@login_required
-def share_notebook(email, notebookid):
-    user = User.query.filter_by(email = email).first()
-    user2 = g.user
-    if user == None:
-        flash('Email ' + email + ' not found.')
-        return redirect(url_for('members'))    
-    if user == g.user:
-        flash('You can\'t share to yourself!')
-        return redirect(url_for('members'))    
-    u = g.user.share(user, notebookid)
-    if u is None:
-        flash('This is not how you unshare with ' + email + '.')
-        return redirect(url_for('members'))
-    db.session.add(u)
-    db.session.commit()
-    flash('You shared a notebook to ' + email + '!')
-    return redirect(url_for('members',))"""
 #==============================Members=============================#    
 @app.route('/members', methods = ['GET', 'POST'])
 @app.route('/members/<int:page>/<int:booked>', methods = ['GET', 'POST'])
