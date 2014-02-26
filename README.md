@@ -33,6 +33,11 @@ Then Install:
     flask/bin/pip install beautifulsoup
     flask/bin/pip install Image
     flask/bin/pip install python-keyczar --pre
+    
+Create Database:
+
+    chmod a+x db_create.py
+    ./db_create.py
 
 To Run:
 
@@ -42,3 +47,7 @@ To Run:
 Browser:
 
     localhost:5000
+
+To Do:
+=========
+    -Shared Notebooks/Notes
