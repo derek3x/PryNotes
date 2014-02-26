@@ -5,7 +5,8 @@ Web base note application. Save your ideas, or the web, and keep it safe and sec
 
 www.prynotes.com
 
-Difference between website and github source:
+Difference Between the Website and the GitHub Source:
+========
 
 -Removed secret keys
 
