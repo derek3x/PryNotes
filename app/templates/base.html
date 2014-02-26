@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="/static/css/summernote.css" rel="stylesheet" media="screen">
+    <link href="{{ url_for('.static', filename = 'css/bootstrap.min.css') }}" rel="stylesheet" media="screen">
+    <link href="/static/css/font-awesome.min.css" rel="stylesheet" media="screen">
+    <meta name="description" content="Create notes and access them anywhere.  Stay organized and keep your data safe with encrypted notes.  We are a privacy concerened website that is trying to provide a safe alternative.">
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8">
+    <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
+    <!--[if lte IE 8]><meta http-equiv="refresh" content="0;url={{url_for('old_browser')}}" /><![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% if title %}
+    <title>{{title}} - PryNotes</title>
+    {% else %}
+    <title>PryNotes</title>
+    {% endif %}
+</head>
+<body>
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        {% if g.user.is_authenticated() %}
+            <a class="navbar-brand" href="/members">PryNotes<small style="font-size:70%">.com</small></a>
+        {% else %}
+            <a class="navbar-brand" href="/index">PryNotes</a>
+        {% endif %}
+        </div>
+        <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav navbar-right">
+            {% if g.user.is_authenticated() %}
+            <li><a href="/members">Home</a></li>
+            <li><a href="/help">Help</a></li>
+            <li><a href="{{ url_for('user', nickname = g.user.nickname) }}">Settings</a></li>
+            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            {% else %}
+            <li><a href="/help">Help</a></li>
+            <li><a href="/login">Sign in / Sign up</a></li>
+            {% endif %}
+        </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+    </div>
+    <hr> 
+    <br>
+    {% block content %}{% endblock %}
+    <div class="container">
+        <hr>
+        <p>&copy; PryNotes 2014.  Powered by <a href="http://hackerwins.github.io/summernote/" target="_blank"> Summernote</a> and <a href="http://getbootstrap.com" target="_blank"> Bootstrap</a></p>
+    </div>  
+
+    <script type="text/javascript" src="/static/js/jquery-latest.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>  
+    <script type="text/javascript" src="/static/js/summernote.min.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.confirm.js"></script>
+    <script type="text/javascript" src="/static/js/notes.js"></script>   
+    
+    <script type="text/javascript">
+        $(document).ready(function() {
+        if ({{page}} !=  0){
+            select_note({{page}}, {{booked}}, '{{booked2}}');
+        }
+        $('#summernote').summernote({tabsize: 4, height: 560, width:300,   
+    toolbar: [
+    ['style', ['style']], // no style button
+    ['style', ['bold', 'italic', 'underline']],
+    ['fontsize', ['fontsize']],
+    ['color', ['color']],
+    ['para', ['ul', 'ol', 'paragraph']],
+    ['height', ['height']],
+    ['insert', ['picture', 'link']], // no insert buttons
+    ['table', ['table']],
+    ['fullscreen', ['fullscreen']],
+    //['help', ['help']] //no help button
+  ],        onkeydown: function(e) {
+            $("#save_btn_span").removeClass('glyphicon glyphicon-floppy-saved').addClass('glyphicon glyphicon-floppy-disk');},
+            codemirror: {
+                theme: 'monokai'}
+        });
+        $('#summernote').code('<div style="text-align: center;"><span style="text-decoration: underline;"><span style="font-weight: bold;">Please select a note before writing</span></span></div>');                
+        });
+    </script>
+</body>
+</html> 

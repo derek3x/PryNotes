@@ -1,0 +1,206 @@
+<!-- New Note Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">New Note:</h4>
+            </div>
+            <div class="modal-body">
+                <form class="bs-example form-horizontal" action="" method="post" name="note">
+                {{form.hidden_tag()}}
+                  <div class="form-group">
+                    <label for="notetitle" class="col-lg control-label">New Note Title:</label>
+                      {{form2.notetitle(type="text", class="form-control")}}
+                      {{form2.hidden2(id="hidden2", style="display:none")}}
+                  </div>                    
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+                </form> 
+        </div>
+    </div>
+</div>
+<!-- New Notebook Modal -->
+<div class="modal fade" id="new_notebook" tabindex="-1" role="dialog" aria-labelledby="new_notebookLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="new_notebookLabel">New Notebook:</h4>
+            </div>
+            <div class="modal-body">
+                <form class="bs-example form-horizontal" action="" method="post" name="notebook">
+                {{form.hidden_tag()}}
+                  <div class="form-group">
+                    <label for="book_title" class="col-lg control-label">New Notebook Title:</label>
+                        {{form3_new_notebook.book_title(type="text", class="form-control")}}
+                    <label for="book_title" class="col-lg control-label">New Note Title:</label>
+                        {{form3_new_notebook.new_note_title(type="text", class="form-control")}}  
+                 </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+                </form> 
+        </div>
+    </div>
+</div>
+
+<!-- Rename Note Modal -->
+<div class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-sm">
+    <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="new_notebookLabel">Rename Note Title</h4>
+            </div>
+            <div class="modal-body">
+                <form class="bs-example form-horizontal" action="" method="post" name="newtitle">
+                {{form.hidden_tag()}}            
+                  <div class="form-group">
+                    <label for="new_title" class="col-lg control-label">Rename Note Title:</label>
+                    {{form4_new_note_title.new_title(type="text", class="form-control")}}
+                    {{form4_new_note_title.hidden_note_id(id="hidden_note_id", style="display:none")}}
+                  </div>
+        </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>    
+            </form>
+    </div>
+</div>
+</div>
+<!-- Rename Notebook Modal -->
+<div class="modal fade bs-modal-smn" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-sm">
+    <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="new_notebookLabel">Rename Notebook Title</h4>
+            </div>
+            <div class="modal-body">
+                <form class="bs-example form-horizontal" action="" method="post" name="newbooktitle">
+                {{form.hidden_tag()}}            
+                  <div class="form-group">
+                    <label for="new_nbtitle" class="col-lg control-label">Notebook Title:</label>
+                    {{form5_new_notebook_title.new_nbtitle(type="text", class="form-control")}}
+                    {{form5_new_notebook_title.hidden_book_id(id="hidden_book_id", style="display:none")}}
+                 </div>
+        </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>    
+            </form>
+    </div>
+</div>
+</div>
+<!-- Rename FC Modal -->
+<div class="modal fade bs-modal-smfc" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-sm">
+    <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="new_notebookLabel">Rename File Cabinet Title</h4>
+            </div>
+            <div class="modal-body">
+                <form class="bs-example form-horizontal" action="" method="post" name="newbooktitle">
+                {{form.hidden_tag()}}            
+                  <div class="form-group">
+                    <label for="new_nbtitle" class="col-lg control-label">File Cabinet Title:</label>
+                    {{form6_new_fc_title.new_fctitle(type="text", class="form-control")}}
+                    {{form6_new_fc_title.hidden_fc_id(id="hidden_fc_id", style="display:none")}}
+                 </div>
+        </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>    
+            </form>
+    </div>
+</div>
+</div>
+<!-- New File Cabinet Modal -->
+<div class="modal fade" id="new_fc" tabindex="-1" role="dialog" aria-labelledby="new_fcLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="new_fcLabel">New File Cabinet:</h4>
+            </div>
+            <div class="modal-body">
+                <form class="bs-example form-horizontal" action="" method="post" name="fc">
+                {{form.hidden_tag()}}
+                  <div class="form-group">
+                    <label for="book_title" class="col-lg control-label">New File Cabinet Title:</label>
+                        {{form7_new_fc.fc_title(type="text", class="form-control")}}
+                    <label for="book_title" class="col-lg control-label">New Notebook Title:</label>
+                        {{form7_new_fc.nb_title(type="text", class="form-control")}}  
+                 </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+                </form> 
+        </div>
+    </div>
+</div>  
+<!-- New FCNotebook Modal -->
+<div class="modal fade" id="new_notebook_in_fc" tabindex="-1" role="dialog" aria-labelledby="new_notebook_in_fcLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="new_notebookLabel">New Notebook:</h4>
+            </div>
+            <div class="modal-body">
+                <form class="bs-example form-horizontal" action="" method="post" name="notebook">
+                {{form.hidden_tag()}}
+                  <div class="form-group">
+                    <label for="book_title" class="col-lg control-label">New Notebook Title:</label>
+                        {{form8_new_fcnotebook.fcbook_title(type="text", class="form-control")}}
+                    <label for="book_title" class="col-lg control-label">New Note Title:</label>
+                        {{form8_new_fcnotebook.fcnew_note_title(type="text", class="form-control")}}
+                        {{form8_new_fcnotebook.hidden_fc_id2(id="hidden_fc_id2", style="display:none")}}
+                 </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+                </form> 
+        </div>
+    </div>
+</div>
+<!-- Move Notebook Modal -->
+<div class="modal fade bs-modal-smmove" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-sm">
+    <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="new_notebookLabel">Move Notebook</h4>
+            </div>
+            <div class="modal-body">
+                <form class="bs-example form-horizontal" action="" method="post" name="newbooktitle">
+                {{form.hidden_tag()}}            
+                  <div class="form-group">
+                    <label for="new_nbtitle" class="col-lg control-label">Move Notebook to File Cabinet:</label>
+                    {{form9_move_notebook.fc_select(class="form-control")}}
+                    {{form9_move_notebook.hidden_nb_id2(id="hidden_nb_id2", style="display:none")}}
+
+                 </div>
+        </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>        
+            </form>
+    </div>
+</div>
+</div>

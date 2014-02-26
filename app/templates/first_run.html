@@ -1,0 +1,65 @@
+<!-- extend base layout -->
+{% extends "base.html" %}
+{% block content %}
+{% include 'flash.html' %}  
+<div class="container-fluid">
+<div class="jumbotron">
+        <h2 style="text-align:center"> Welcome to PryNotes!</h2>
+        <p style="text-align:center"> Once your ready to start creating your online notes you can click the "Get Started Now" button</p>
+        <p style="text-align:center"><a class="btn btn-info" href="{{url_for('members')}}">Get Started Now</a></p>
+        
+</div>
+</div>
+    <div class="container">
+      <div class="row">
+
+        <div class="col-md-4" style="margin-right:20px;">
+          <h3><span class="glyphicon glyphicon-book"></span>Notebooks</h3>
+          <p>Notebooks keep you organized.  Think of a notebook like a binder that has all of your Notes inside.</p>
+          <p><img src="/static/img/Notebooks.png"></p>
+          <p>To create a new Notebook you simply click the "New" button on the right of where it says Notebooks</p>
+        </div>
+        <div class="col-md-4" style="border-left: 1px solid #ccc;">
+          <h3><span class="glyphicon glyphicon-floppy-saved"></span>Save Web Clippings</h3>
+          <p>See a website or article you like?  Copy and paste the website to create a Note.  Just a quick clean up and alignment and its yours forever.</p>
+          <p><img src="/static/img/WebClip.png" HEIGHT=250 WIDTH=300></p>
+          <p>To create a new Note within your Notebook you click on the "+" sign beside your Notebook</p>
+        </div> 
+            <div class="col-md-3">
+            <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">Quick FAQ:</h3>
+            </div>
+            <div class="panel-body">
+                <p>Do you encrypt the notes?</p><p class="pull-right">Yes, 256 bit on the notes</p>
+                <hr>
+                <p>Is this free?</p><p class="pull-right">Yes</p> 
+                <hr>
+                <p>Will you sell my information?</p><p class="pull-right">No</p> 
+                <hr>
+                <p>Can I change my nickname?</p><p class="pull-right">Yes, In the settings</p> 
+                <hr>
+                <p>Can I access my Notes from anywhere?</p><p class="pull-right">Yes, as long as you have Internet</p> 
+                <hr>  
+                <p>Can I delete my account?</p><p class="pull-right">Yes, In the settings</p>            
+            <hr>     
+            </div>
+            </div>
+            </div>        
+      </div>
+      <hr>
+      <div class="row">
+        <div class="col-md-4" style="margin-right:20px;">
+          <h3><span class="glyphicon glyphicon-inbox"></span>File Cabinets</h3>
+          <p>File Cabinets are there to hold your Notebooks and keep them organized.</p>
+          <p><img src="/static/img/Filecabinetimg.png"></p>
+          <p>To create a new File Cabinet you simply click the "New" button on the right of where it says File Cabinets</p>
+        </div> 
+        <div class="col-md-5" style="border-left: 1px solid #ccc;">
+          <h3><span class="glyphicon glyphicon-pencil"></span>Edit Your Notes</h3>
+          <p>Edit your notes however you see fit.  There is a word processing style toolbar to help your notes how you see fit</p>
+          <p><img src="/static/img/Editing.png"></p>
+        </div>         
+      </div>         
+    </div> <!-- /container --> 
+{% endblock %} 

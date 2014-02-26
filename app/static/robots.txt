@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: 
+Disallow: /members/
+Sitemap: http://www.prynotes.com/sitemap.xml

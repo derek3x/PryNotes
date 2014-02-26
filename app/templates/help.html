@@ -1,0 +1,247 @@
+<!-- extend base layout -->
+{% extends "base.html" %}
+{% block content %}
+{% include 'flash.html' %}
+<div class="container">
+<div class="col-md-6">
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <h3 class="panel-title">Help Items:</h3>
+  </div>
+<div class="panel-body">
+<div class="panel-group" id="accordion">
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+          What are File Cabinets?
+        </a>
+      </h4>
+    </div>
+    <div id="collapseOne" class="panel-collapse collapse">
+      <div class="panel-body">
+        <p> File Cabinets make it possible to organize your notebooks.  For example, you can have a fitness File Cabinet, then have different Notebooks for different fitness topics.  You could have one Notebook for workouts, diets, and articles.  Then have Notes in each Notebook so it is all organized and easily found when you need the information.</p>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+          What are Notebooks?
+        </a>
+      </h4>
+    </div>
+    <div id="collapseTwo" class="panel-collapse collapse">
+      <div class="panel-body">
+        <p> Notebooks are there so you can keep a collection of Notes in an organized and easy to find location.  For example, you could have a Notebook about BBQ Recipies.  Then inside that Notebook have a bunch of different Notes that are BBQ Recipes.</p>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+          Is the Website Encrypted?
+        </a>
+      </h4>
+    </div>
+    <div id="collapseThree" class="panel-collapse collapse">
+      <div class="panel-body">
+        <p> Yes, we encrypt the body of your Notes.  This means we do not encrypt your File Cabinet, Notebook, or Note Titles.  The body of every Note is encrypted with 256 bit encryption.  We do not suggest saving your passwords or important confidential information such as bank accounts or credit card numbers.</p>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
+          How do I Create a File Cabinet?
+        </a>
+      </h4>
+    </div>
+    <div id="collapseFour" class="panel-collapse collapse">
+      <div class="panel-body">
+        <p>You simply click the <a class="badge" style="background-color: #3a87ad">New</a> button on the right of the File Cabinets</p>
+      </div>
+    </div>
+  </div> 
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseFive">
+          How do I Create a Notebook?
+        </a>
+      </h4>
+    </div>
+    <div id="collapseFive" class="panel-collapse collapse">
+      <div class="panel-body">
+        <p>You simply click the <a class="badge" style="background-color: #3a87ad">New</a> button on the right of the Notebooks</p>
+      </div>
+    </div>
+  </div>  
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseSix">
+          How do I Create a Note?
+        </a>
+      </h4>
+    </div>
+    <div id="collapseSix" class="panel-collapse collapse">
+      <div class="panel-body">
+        <p>You simply click the <small><span class="glyphicon glyphicon-plus"></span></small> button on the right of the Notebooks</p>
+      </div>
+    </div>
+  </div> 
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseSeven">
+          Is my Information Safe?
+        </a>
+      </h4>
+    </div>
+    <div id="collapseSeven" class="panel-collapse collapse">
+      <div class="panel-body">
+        <p>We have done our best to make your information safe.  We will not mine your data for ads, we will not sell your data, and we encrypt your notes so even if we wanted to, we can't see your notes.</p>
+      </div>
+    </div>
+  </div> 
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseEight">
+          I Forgot my Password
+        </a>
+      </h4>
+    </div>
+    <div id="collapseEight" class="panel-collapse collapse">
+      <div class="panel-body">
+        <p>We can not help you.  The login is done through a third party (google, yahoo, etc).  If you lose your password with them you will have to reset it with them.</p>
+      </div>
+    </div>
+  </div>  
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseNine">
+          Why Free?
+        </a>
+      </h4>
+    </div>
+    <div id="collapseNine" class="panel-collapse collapse">
+      <div class="panel-body">
+        <p>We all like a free service.  This site will be free as long as we can keep it that way.  There will soon be a donation button if you want to help with the server costs and pay the developer.</p>
+      </div>
+    </div>
+  </div>   
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseTen">
+          Can I Change my Nickname?
+        </a>
+      </h4>
+    </div>
+    <div id="collapseTen" class="panel-collapse collapse">
+      <div class="panel-body">
+        <p>Yes, click on the settings near the top right of the browser window.  You can make your name what ever you wish. </p>
+      </div>
+    </div>
+  </div>  
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapse11">
+          Do you track us?
+        </a>
+      </h4>
+    </div>
+    <div id="collapse11" class="panel-collapse collapse">
+      <div class="panel-body">
+        <p>No.  We only get your nickname(username), and email address with your account you used to sign in with.  We keep track of your last visit so we can delete old accounts if need be in the future.  For website analytics we use parse and strip our own logs.  So bluntly, we don't want to track you and never will.  This site was created due to privacy concerns with other websites, so we will not create the same hostile environment.</p>
+      </div>
+    </div>
+  </div> 
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapse12">
+          Can I Delete my Account?
+        </a>
+      </h4>
+    </div>
+    <div id="collapse12" class="panel-collapse collapse">
+      <div class="panel-body">
+        <p>Yes, you can delete your account at anytime from the settings page.  If you delete your account we will delete all of your notes, notebooks, and filecabinets.  Your user account will be purged from the database and nothing will be saved or be possibly retrieved after deletion.</p>
+      </div>
+    </div>
+  </div>  
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapse13">
+          What file types can I attach?
+        </a>
+      </h4>
+    </div>
+    <div id="collapse13" class="panel-collapse collapse">
+      <div class="panel-body">
+        <p>Right now we support the following file types: <br> 
+            <li>txt</li>
+            <li>pdf</li>
+            <li>png</li>
+            <li>jpg</li>
+            <li>jpeg</li>
+            <li>gif</li>
+            <li>zip</li>
+            <li>tar</li>
+            <li>rar</li>
+            <li>tgz</li>
+            <li>png</li>
+            <li>doc</li>
+            <li>odt</li>
+            <li>xls</li>
+            <li>xlsx</li>
+            <li>ppt</li></p>
+      </div>
+    </div>
+  </div>   
+  </div>
+</div>
+</div>
+</div>
+<div class="col-md-4">
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <h3 class="panel-title">Quick FAQ:</h3>
+  </div>
+  <div class="panel-body">
+  <p>Do you encrypt the notes?</p><p class="pull-right">Yes, 256 bit on the notes</p>
+  <hr>
+  <p>Do you keep passwords?</p><p class="pull-right">No</p>
+  <hr>
+  <p>Do you track us?</p><p class="pull-right">No</p>
+  <hr>
+  <p>Is this free?</p><p class="pull-right">Yes</p> 
+  <hr>
+  <p>Will you sell my information?</p><p class="pull-right">No</p> 
+  <hr>
+  <p>Can I save website articles?</p><p class="pull-right">Yes</p> 
+  <hr>
+  <p>Do you accept donations?</p><p class="pull-right">Soon We Will Add a Link</p> 
+  <hr>  
+  <p>Can I change my nickname?</p><p class="pull-right">Yes, In the settings</p> 
+  <hr>
+  <p>Can I access my Notes from anywhere?</p><p class="pull-right">Yes, as long as you have Internet</p> 
+  <hr>  
+  <p>Can I delete my account?</p><p class="pull-right">Yes, In the settings</p> 
+  <hr> 
+  <p>What is the maximum attachement size?</p><p class="pull-right">16mb per file</p> 
+  <hr>     
+  </div>
+</div>
+</div>
+</div>
+{% endblock %} 

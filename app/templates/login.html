@@ -1,0 +1,72 @@
+<!-- extend base layout -->
+{% extends "base.html" %}
+{% block content %}
+{% include 'flash.html' %}
+<script type="text/javascript">
+function set_openid(openid, pr)
+{
+    u = openid.search('<username>')
+    if (u != -1) {
+        // openid requires username
+        user = prompt('Enter your ' + pr + ' username:')
+        openid = openid.substr(0, u) + user
+    }
+    form = document.forms['login'];
+    form.elements['openid'].value = openid
+}
+</script>
+{% include 'flash.html' %}
+    <div class="container">
+
+    <div class="row">
+        <div class="col-md-5">
+        <div class="well well-lg">
+            <h2 class="form-signin-heading">Please sign in</h2>
+            <form class="form-signin" action="" method="post" name="login">
+                {{form.hidden_tag()}}
+                <div class="form-group">
+                    <label class="col-lg control-label">Click on your OpenID provider below:</label>                
+                <div class="control-group">
+                    {% for pr in providers %}
+                    <a href="javascript:set_openid('{{pr.url}}', '{{pr.name}}');"><img src="/static/img/{{pr.name.lower()}}.png" class="img-polaroid" style="margin:2px;" /></a>
+                    {% endfor %}
+                </div>
+                <div class="control-group{% if form.errors.openid %} error{% endif %}">
+
+                    <div class="controls">
+
+                    {{ form.openid(type="text", class="form-control", readonly="true") }}                
+                    {% for error in form.errors.openid %}
+                        <span class="help-inline">[{{error}}]</span><br>
+                    {% endfor %}
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <label class="checkbox" for="remember_me">
+                            {{ form.remember_me }} Remember Me
+                        </label>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <input class="btn btn-primary" type="submit" value="Sign In">
+                    </div>
+                </div>          
+                </div>
+            </form>
+
+        </div>
+    </div>
+        <div class="col-md-6">
+        <div class="well well-lg">
+            <h2 class="form-signin-heading">Instructions</h2>
+            <p> To log in you just need to click on an account you already have.  After you choose an OpenID provider, just click on submit.  Right now we accept Google, Yahoo, or Flickr</p>
+            <p> We do not track or keep anything regarding the way you logged in.  We simply keep track of your email address/username from the account you used to login.</p>
+            <p> Logging in this way keeps things secure, and we will know as little about you as possible.  This is one way we try to keep things simple.</p>
+            <br>
+            </div>
+        </div>       
+    </div>     
+    </div> <!-- /container --> 
+{% endblock %}
