@@ -33,8 +33,10 @@ Then Install:
     flask/bin/pip install python-keyczar --pre
 
 To Run:
+
     chmod a+x run.py
     ./run.py
 
 Browser:
+
     localhost:5000
