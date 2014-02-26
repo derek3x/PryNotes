@@ -8,7 +8,9 @@ www.prynotes.com
 Difference between website and github source:
 
 -Removed secret keys
+
 -Simplified the encryption. I did this to avoid having the encryption method out. I use the keyczar still on the website, but include a special changing salt and extra security. On the github version I use just the keyczar encryption. This is simply a security thing for the website.
+
 -This version is setup to use sqlite. Just makes it easier to test and run locally. It is a super quick change.
 
 To Setup Locally:
