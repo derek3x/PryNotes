@@ -141,32 +141,7 @@
                         </div>
                     </div>
                     {% endif %}
-                {% endfor %}  
-                <!---     Shared Notebooks              -->
-                <h5><span class="glyphicon glyphicon-book"></span>Shared Notebooks:</h5>
-                {% for sharednb in nbs_shared_to_user %}
-                   <div class="panel panel-default">
-                        <div class="panel-heading">
-                        <div class="dropdown">
-                            <h4 class="panel-title" style="max-height:10px;">
-                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapsesh{{ loop.index }}">
-                                {{sharednb.title}}
-                                </a>                                             
-                            </h4>
-                            </div>
-                        </div>
-                        <div id="collapsesh{{ loop.index }}" class="panel-collapse collapse">
-                            <div class="panel-body">
-                            <ul class="list-group">
-                            {% for note in sharednb.notes_link.all() %}
-                                <a role="button" id="{{note.id}}" href="javascript:select_shared_note('{{note.id}}', '{{sharednb.id}}', '{{sharednb.title}}');" class="list-group-item-text" style="color:#555555"><span class="glyphicon glyphicon-file"></span>{{note.title}}</a>
-                            {% endfor %}
-                            </ul>                                        
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-    
+                {% endfor %}                
             </div>
         </div>
         </div>
@@ -198,7 +173,7 @@
                 {{form.hidden(style="display:none")}}
                 {{form.hidden3(style="display:none")}}
                 <a id="save_btn" type="button" class="btn btn-primary disabled"><span id="save_btn_span" class="glyphicon glyphicon-floppy-disk"></span> Save changes</a>
-                <img id="loading" src="/static/img/loading.gif" style="display:none">
+		<img id="loading" src="/static/img/loading.gif" style="display:none">
             </form>
         
         </div>

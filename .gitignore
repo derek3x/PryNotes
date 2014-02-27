@@ -5,3 +5,7 @@
 app.db
 db_repository
 flask
+tmp/associations/*
+tmp/nonces/*
+tmp/temp/*
+tmp/*.log
