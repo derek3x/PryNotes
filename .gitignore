@@ -1,0 +1,7 @@
+*.py[cod]
+*.tar.gz
+.directory
+app.db
+db_repository
+flask
+tmp/*
