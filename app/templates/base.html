@@ -65,11 +65,12 @@
         if ({{page}} !=  0){
             select_note({{page}}, {{booked}}, '{{booked2}}');
         }
-        $('#summernote').summernote({tabsize: 4, height: 560, width:300,   
+        $('#summernote').summernote({tabsize: 4, height: 560, width:'100%',   
     toolbar: [
     ['style', ['style']],
-    ['style', ['bold', 'italic', 'underline']],
+    ['style', ['bold', 'italic', 'underline', 'clear']],
     ['fontsize', ['fontsize']],
+    ['fontname', ['fontname']],
     ['color', ['color']],
     ['para', ['ul', 'ol', 'paragraph']],
     ['height', ['height']],
