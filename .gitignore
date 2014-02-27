@@ -8,4 +8,4 @@ flask
 tmp/associations/*
 tmp/nonces/*
 tmp/temp/*
-tmp/*.log
+tmp/prynotes.log
