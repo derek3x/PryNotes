@@ -4,4 +4,3 @@
 app.db
 db_repository
 flask
-tmp/*
