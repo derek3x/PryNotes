@@ -47,7 +47,7 @@
                                <a class="dropdown-toggle" data-toggle="dropdown">
                                     <span class="caret"></span>
                                     <span class="sr-only">Toggle Dropdown</span>
-                                    <small><span class="badge" id="badge{{loop.index}}" style="background-color: #999999;font-size:85%;">{% if book.id in note_counter %} {{note_counter[book.id]}} {% endif %}</span></small>
+                                    <small><span class="badge" id="badge{{loop.index}}" style="background-color: #999999;font-size:90%;">{% if book.id in note_counter %} {{note_counter[book.id]}} {% endif %}</span></small>
                                 </a>    
                                 <ul class="dropdown-menu pull-right" style="z-index: 10000; position: relative; " role="menu">
                                     <li><a href="#" data-toggle="modal" onclick="caret_clickNB('{{book.id}}','{{book.title}}')" data-target=".bs-modal-smmove">Move</a></li>
