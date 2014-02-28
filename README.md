@@ -34,6 +34,11 @@ Then Install:
     flask/bin/pip install Image
     flask/bin/pip install python-keyczar --pre
     
+Create Encryption Keys:
+    
+    chmod a+x create_keys.py
+    ./create_keys
+    
 Create Database:
 
     chmod a+x db_create.py
