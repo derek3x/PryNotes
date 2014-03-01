@@ -20,7 +20,7 @@ from keyczar import keyczar
 from flask import jsonify
 
 UPLOAD_FOLDER = '/static/uploads'
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'zip', 'tar', 'rar', 'tgz', 'png', 'doc', 'odt', 'xls', 'xlsx', 'ppt'])
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'zip', 'tar', 'rar', 'tgz', 'png', 'doc', 'odt', 'xls', 'xlsx', 'ppt', 'docx'])
 
 
 
