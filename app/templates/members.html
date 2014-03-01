@@ -148,6 +148,7 @@
         <!-- Editor Side (Right Side) -->
         <div class="col-md-8">
         <div class="well well-lg">
+            <p id="note_header" style="text-align:center;color:#555555"></p>
             <!-- Buttons Along The Top Of Editor -->
             <div class="btn-group">
             <button type="button" class="btn btn-default dropdown-toggle btn-sm disabled" data-toggle="dropdown" id="notebookchange">
@@ -173,9 +174,9 @@
                 {{form.hidden(style="display:none")}}
                 {{form.hidden3(style="display:none")}}
                 <a id="save_btn" type="button" class="btn btn-primary disabled"><span id="save_btn_span" class="glyphicon glyphicon-floppy-disk"></span> Save changes</a>
-		<img id="loading" src="/static/img/loading.gif" style="display:none">
+                <img id="loading" src="/static/img/loading.gif" style="display:none">
+                <p id="note_footer" class ="pull-right" style="text-align:center;color:#555555;font-size:85%"></p>
             </form>
-        
         </div>
         </div>    
         

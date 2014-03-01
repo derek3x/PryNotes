@@ -219,6 +219,7 @@ def editor():
             base = base_fix(doc_stripped)
             encrypted = encrypt_it(base)
             n.body = encrypted
+            n.timestamp = datetime.utcnow()
             nbid = request.form['book']
             if nbid == None:
                 flash('Notebook not found.  If you think this is in error, please contact us.', 'danger')
@@ -248,8 +249,11 @@ def select_note():
             decrypted = decrypt_it(n.body)
         else:
             decrypted = n.body
+        time = str(n.timestamp)
         return jsonify({
-        'text': decrypted })  
+        'text': decrypted,
+        'title' : n.title,
+        'stamps' : time})  
         
 #==============================Select a Shared Note=============================#
 @app.route('/select_shared_note', methods = ['POST'])

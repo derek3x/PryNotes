@@ -24,21 +24,12 @@
                 note_id: id
             }).done(function(select_note) {
                 $('#summernote').code(select_note['text']);
+                var localTime  = moment.utc(select_note['stamps']).toDate();
+                localTime = moment(localTime).format('MMMM Do YYYY, h:mm:ss a');                
+                $('#note_header').html(select_note['title']);
+                $('#note_footer').html(localTime);
             });            
         }   
-        
-        function select_shared_note(id, bookid, booktitle){
-            document.getElementById("notebookchange").className="btn btn-default dropdown-toggle btn-sm";
-            document.getElementById("save_btn").className="btn btn-primary";
-            document.getElementById("save_btn").href="javascript:save_note('" +id+"','"+bookid+ "','False');";
-            var arrow = ' <span class="caret"></span>'
-            document.getElementById("notebookchange").innerHTML=booktitle + arrow;
-            jQuery.post('/select_shared_note', {
-                note_id: id
-            }).done(function(select_note) {
-                $('#summernote').code(select_note['text']);
-            });            
-        }          
         
         function caret_click(noteid, notetitle){
             document.getElementById("hidden_note_id").value=noteid;
