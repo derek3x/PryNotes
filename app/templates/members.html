@@ -165,6 +165,7 @@
                 <form action="" method="post" enctype="multipart/form-data">
                     {{attach.hidden_tag()}}
                     {{attach.attach_it(id="upload", style="display:none")}}
+                    <a id="pintMe" href="#" type="button" onclick="openWin()" class="btnxs btn-default"><span class="glyphicon glyphicon-print"></span></a>                    
                     <a id="clip" href="#" type="button" onclick="$('input[id=upload]').click();" class="btnxs btn-default"><span class="glyphicon glyphicon-paperclip"></span></a>
                 </form>
             </div>
@@ -179,10 +180,7 @@
             </form>
         </div>
         </div>    
-        
     <!-- /Editor Side (Right Side) -->
-
     {% include 'modal.html' %}
-
     </div> <!-- /container -->
 {% endblock %} 

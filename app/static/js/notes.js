@@ -77,6 +77,16 @@
             text: "Are you sure you want to delete your account?  This will remove everything and you will never be able to get it back.",
             title: "Confirmation Required"
         });
+        function openWin()
+        {
+            var w = window.open();
+            var html = $("#summernote").code();
+            var title = $('#note_header').html();
+            $(w.document.body).html(html);
+            w.document.title = title;
+            w.print();
+            w.close();
+        }        
         jQuery('input[id=upload]').change(function() {
             var text = $('#summernote').code();
             var filer = this.files[0];
