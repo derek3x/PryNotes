@@ -21,7 +21,10 @@ from flask import jsonify
 
 UPLOAD_FOLDER = '/static/uploads'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'zip', 'tar', 'rar', 'tgz', 'png', 'doc', 'odt', 'xls', 'xlsx', 'ppt', 'docx'])
-
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 
 #========================HTML Stripers and Fixers=============================#
