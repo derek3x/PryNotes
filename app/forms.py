@@ -49,3 +49,7 @@ class Move_Notebook(Form):
     
 class Attach(Form):
     attach_it = FileField('upload')
+    
+class Merge(Form):
+    nt_select = SelectField('nt_select', coerce=int,validators = [Required()])
+    merge_note_id = TextField('merge_note_id')

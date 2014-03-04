@@ -34,7 +34,10 @@
         function caret_click(noteid, notetitle){
             document.getElementById("hidden_note_id").value=noteid;
             document.getElementById("new_title").value=notetitle;
-        }    
+        }  
+        function caret_merge(noteid){
+            document.getElementById("merge_note_id").value=noteid;
+        }            
         function caret_clickNB(bookid, booktitle){
             document.getElementById("hidden_book_id").value=bookid;
             document.getElementById("new_nbtitle").value=booktitle;

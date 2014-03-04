@@ -37,7 +37,7 @@ Then Install:
 Create Encryption Keys:
     
     chmod a+x create_keys.py
-    ./create_keys
+    ./create_keys.py
     
 Create Database:
 

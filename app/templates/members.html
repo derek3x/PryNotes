@@ -74,7 +74,7 @@
                                         <ul class="dropdown-menu pull-right" style="z-index: 10000; position: relative; " role="menu">
                                             <li><a href="#" data-toggle="modal" onclick="caret_click('{{note.id}}','{{note.title}}')" data-target=".bs-modal-sm">Rename</a></li>
                                             <li><a href="{{ url_for('delete', ids = note.id) }}" class="confirm">Delete</a></li>
-
+                                            <li><a href="#" data-toggle="modal" onclick="caret_merge('{{note.id}}')" data-target=".bs-modal-smerge">Merge Note</a></li>
                                         </ul>                                        
                                     </div>                                    
                                     {% endif %}
@@ -131,6 +131,7 @@
                                         <ul class="dropdown-menu pull-right" style="z-index: 10000; position: relative; " role="menu">
                                             <li><a href="#" data-toggle="modal" onclick="caret_click('{{note.id}}','{{note.title}}')" data-target=".bs-modal-sm">Rename</a></li>
                                             <li><a href="{{ url_for('delete', ids = note.id) }}" class="confirm">Delete</a></li>
+                                            <li><a href="#" data-toggle="modal" onclick="caret_merge('{{note.id}}')" data-target=".bs-modal-smerge">Merge Note</a></li>
 
                                         </ul>                                        
                                     </div>

@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, session, url_for, request, g, request, send_from_directory
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm, oid
-from forms import LoginForm, EditForm, Note_Form, Note_Title, New_Notebook, Rename_Note, Rename_Notebook, Rename_FileCabinet, New_FileCabinet, New_FCNotebook, Move_Notebook, Attach
+from forms import LoginForm, EditForm, Note_Form, Note_Title, New_Notebook, Rename_Note, Rename_Notebook, Rename_FileCabinet, New_FileCabinet, New_FCNotebook, Move_Notebook, Attach, Merge
 from models import User, ROLE_USER, ROLE_ADMIN, Notes, Notebooks, Filecabinets
 from datetime import datetime
 from flask.ext.sqlalchemy import get_debug_queries
@@ -256,29 +256,7 @@ def select_note():
         return jsonify({
         'text': decrypted,
         'title' : n.title,
-        'stamps' : time})  
-        
-#==============================Select a Shared Note=============================#
-@app.route('/select_shared_note', methods = ['POST'])
-@login_required
-def select_shared_note():        
-    user = g.user
-    nbs_shared_to_user = g.user.followed_nbs()
-    ids = re.search('[0-9]+',request.form['note_id'])
-    if ids == None:
-        flash('Note not found.  If you think this is in error, please contact us.', 'danger')
-        return redirect(url_for('members'))            
-    n = Notes.query.get(int(ids.group(0)))
-    for sharednb in nbs_shared_to_user:
-        if n not in sharednb.notes_link.all():
-            return jsonify({
-            'text': "Either you are trying to trick the system, or you don't have access to this note." })
-    if len(n.body) > 2:
-        decrypted = decrypt_it(n.body)
-    else:
-        decrypted = n.body
-    return jsonify({
-        'text': decrypted })         
+        'stamps' : time})          
 
 #==============================Members=============================#    
 @app.route('/members', methods = ['GET', 'POST'])
@@ -296,6 +274,7 @@ def members(page=0, booked=0):
     form7_new_fc = New_FileCabinet()
     form8_new_fcnotebook = New_FCNotebook()
     form9_move_notebook = Move_Notebook()
+    merge = Merge()
     attach = Attach(csrf_enabled=False)
     booked2 = ""
     fcd = 0
@@ -309,6 +288,7 @@ def members(page=0, booked=0):
             fcd = nbid.filecabinet
     note_counter = {}
     form9_move_notebook.fc_select.choices = [(fcg.id, fcg.title) for fcg in fc]
+    merge.nt_select.choices = [(nt.id, nt.title) for nt in notes]
     for book in books: # count the notes in each book for badges
         for note in notes:
             if note.notebooks_id == book.id:
@@ -335,7 +315,7 @@ def members(page=0, booked=0):
                 db.session.add(nb)
                 db.session.commit()
                 return redirect(url_for('members', page = 0, booked = nb.id))
-        
+            
     if form3_new_notebook.validate_on_submit(): #new notebook 
         nb_title = nohtml(form3_new_notebook.book_title.data)
         if len(nb_title) > 40:
@@ -350,7 +330,7 @@ def members(page=0, booked=0):
         db.session.add(nn)
         db.session.commit() 
         return redirect(url_for('members', page = nn.id, booked = nb.id))
-        
+    
     if form2.validate_on_submit(): # new note form
         nbid = form2.hidden2.data
         if nbid == None:
@@ -366,7 +346,7 @@ def members(page=0, booked=0):
             db.session.add(nn)
             db.session.commit()
             return redirect(url_for('members', page = nn.id, booked = int(nbid)))
-            
+        
     if form4_new_note_title.validate_on_submit(): #rename note
         ids = re.search('[0-9]+',form4_new_note_title.hidden_note_id.data)
         if ids == None:
@@ -381,7 +361,7 @@ def members(page=0, booked=0):
             db.session.add(n)
             db.session.commit()
             return redirect(url_for('members', page = n.id, booked = n.notebooks_id))
-
+        
     if form7_new_fc.validate_on_submit(): #new file cabinet 
         fc_title = nohtml(form7_new_fc.fc_title.data)
         if len(fc_title) > 40:
@@ -396,7 +376,7 @@ def members(page=0, booked=0):
         db.session.add(nb)
         db.session.commit() 
         return redirect(url_for('members', page = 0, booked = nb.id))        
-        
+    
     if form5_new_notebook_title.validate_on_submit(): #Rename Notebook
         nbid = re.search('[0-9]+',form5_new_notebook_title.hidden_book_id.data)
         if nbid == None:
@@ -427,7 +407,7 @@ def members(page=0, booked=0):
             nfc.title = fc_title
             db.session.add(nfc)
             db.session.commit()
-            return redirect(url_for('members'))  
+            return redirect(url_for('members'))      
         
     if form8_new_fcnotebook.validate_on_submit(): #new file cabinet notebook 
         fcid = re.search('[0-9]+',form8_new_fcnotebook.hidden_fc_id2.data)
@@ -448,8 +428,33 @@ def members(page=0, booked=0):
             nn = Notes(title=nn_title, body=" ", timestamp=datetime.utcnow(), notes_link=nb, note=g.user)
             db.session.add(nn)
             db.session.commit() 
-            return redirect(url_for('members', page = nn.id, booked = nb.id))    
+            return redirect(url_for('members', page = nn.id, booked = nb.id))  
         
+    if merge.validate_on_submit(): # Merge two notes
+        mergee_id = re.search('[0-9]+',merge.merge_note_id.data)
+        if mergee_id == None:
+            flash('Note not found.  If you think this is in error, please contact us.', 'danger')
+            return redirect(url_for('members'))
+        n = Notes.query.get(int(mergee_id.group(0)))
+        merger_id = merge.nt_select.data
+        if int(mergee_id.group(0)) == int(merger_id):
+            flash('You can not merge a Note into itself', 'danger')
+            return redirect(url_for('members'))            
+        nn = Notes.query.get(int(merger_id))        
+        if note_check_out(n) and note_check_out(nn):
+            if len(n.body) < 2 or len(nn.body) < 2:
+                flash('You can not merge an empty note', 'danger')
+                return redirect(url_for('members'))                 
+            mergee = decrypt_it(n.body)
+            merger = decrypt_it(nn.body)
+            new_note = mergee + merger
+            if len(new_note) <= 524279:
+                n.body = encrypt_it(new_note)
+                db.session.add(n)
+                db.session.delete(nn)
+                db.session.commit()
+                return redirect(url_for('members', page=n.id, booked=n.notebooks_id))
+            
     return render_template("members.html",
         title = 'Members',
         user = user,
@@ -461,6 +466,7 @@ def members(page=0, booked=0):
         form6_new_fc_title = form6_new_fc_title,
         form7_new_fc = form7_new_fc,
         form8_new_fcnotebook = form8_new_fcnotebook,
+        merge = merge,
         note_counter = note_counter,
         fc = fc,
         fcd = fcd,
