@@ -52,6 +52,7 @@ class Notebooks(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     notes_link = db.relationship('Notes', backref = 'notes_link', lazy = 'dynamic')
     filecabinet = db.Column(db.Integer, db.ForeignKey('filecabinets.id'))
+    shared_to = db.Column(db.Integer)
 
     def __repr__(self):
         return '<NoteBooks %r>' % (self.title)   

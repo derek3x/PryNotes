@@ -1,7 +1,7 @@
 PryNotes
 ========
 
-Web base note application. Save your ideas, or the web, and keep it safe and secure.
+Web based note application. Save your ideas, notes, todo lists, recipes, news articles or anything you find online. Keep it safe and secure with encryption and in a database that won't be mined or sold.
 
 www.prynotes.com
 
@@ -52,7 +52,3 @@ To Run:
 Browser:
 
     localhost:5000
-
-To Do:
-=========
-    -Shared Notebooks/Notes
