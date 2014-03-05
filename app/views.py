@@ -194,7 +194,12 @@ def old_browser():
 @app.route('/help')
 def helps():
     return render_template("help.html",
-        title = 'Help')
+        title = 'Help - PryNotes')
+#================================Learn More===============================#    
+@app.route('/learnmore')
+def learnmore():
+    return render_template("learnmore.html",
+        title = 'PryNotes - Learn PryNotes')
 #================================First Run===============================#    
 @app.route('/first_run')
 @login_required
