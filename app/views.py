@@ -20,12 +20,20 @@ from keyczar import keyczar
 from flask import jsonify
 
 UPLOAD_FOLDER = '/static/uploads'
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'zip', 'tar', 'rar', 'tgz', 'png', 'doc', 'odt', 'xls', 'xlsx', 'ppt', 'docx'])
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 
+                          'png', 'jpg', 
+                          'jpeg', 'gif', 
+                          'zip', 'tar', 
+                          'rar', 'tgz', 
+                          'png', 'doc', 
+                          'odt', 'xls', 
+                          'xlsx', 'ppt', 
+                          'docx'])
+
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
-
 
 #========================HTML Stripers and Fixers=============================#
 """
@@ -108,8 +116,8 @@ def htmlwork(doc):
         return doc
 
 def strip_extras(doc):
-    #doc_stripped = re.sub('[%s]' % ''.join("'"), "\\'", doc) #Escape ' as it will break everything if you don't - No longer needed
-    doc_stripped = "".join( doc.splitlines()) # Fixes the end of line issue in the editor on copy and paste.  
+    #doc_stripped = re.sub('[%s]' % ''.join("'"), "\\'", doc) #Escape ' as it will break everything if you don't - Fixed (kept for reference)
+    doc_stripped = "".join( doc.splitlines()) # Fixes the end of line issue in the editor on copy and paste from website.  
     return doc_stripped
 
 class MLStripper(HTMLParser):
@@ -154,11 +162,12 @@ def uploaded_file(filename):
                                 filename)
     else:
         return send_from_directory(app.config['UPLOAD_FOLDER'],
-                                '~Data.txt')
+                                '~Data.txt') #fake file for the bots
         
 @app.route('/static/uploads/<filename>')
 @login_required
 def security(filename):
+    #This is setup as a warning to people trying to randomly hit others data.
     logout_user()
     return render_template("index.html",
         title = 'Home')    
@@ -239,8 +248,8 @@ def editor():
                 db.session.commit()
                 decrypted = decrypt_it(n.body)
                 return jsonify({
-                    'text': decrypted,
-                    'refresh':request.form['refresh']})
+                        'text': decrypted,
+                        'refresh':request.form['refresh']})
 
 #==============================Select a Note=============================#
 @app.route('/select_note', methods = ['POST'])
@@ -259,9 +268,9 @@ def select_note():
             decrypted = n.body
         time = str(n.timestamp)
         return jsonify({
-        'text': decrypted,
-        'title' : n.title,
-        'stamps' : time})          
+                'text': decrypted,
+                'title' : n.title,
+                'stamps' : time})          
 
 #==============================Members=============================#    
 @app.route('/members', methods = ['GET', 'POST'])
@@ -283,6 +292,9 @@ def members(page=0, booked=0):
     attach = Attach(csrf_enabled=False)
     booked2 = ""
     fcd = 0
+    note_counter = {}
+
+    # Make sure the notebook is theirs
     if booked > 0:
         if booked == None:
             flash('Notebook not found.  If you think this is in error, please contact us.', 'danger')
@@ -291,10 +303,13 @@ def members(page=0, booked=0):
         if notebook_check_out(nbid):
             booked2 = nbid.title
             fcd = nbid.filecabinet
-    note_counter = {}
+    
+    # Populate the list choices        
     form9_move_notebook.fc_select.choices = [(fcg.id, fcg.title) for fcg in fc]
     merge.nt_select.choices = [(nt.id, nt.title) for nt in notes]
-    for book in books: # count the notes in each book for badges
+    
+    # Count the notes in each book for badges
+    for book in books: 
         for note in notes:
             if note.notebooks_id == book.id:
                 if book.id in note_counter:
@@ -305,7 +320,9 @@ def members(page=0, booked=0):
                     n = Notes.query.get(note.id)
                     db.session.delete(n)
     db.session.commit()  
-    if form9_move_notebook.validate_on_submit():            #move notebooks to file cabinets
+    
+    # Move notebooks to file cabinets
+    if form9_move_notebook.validate_on_submit():
         new_fc_id = form9_move_notebook.fc_select.data
         if new_fc_id == None or type(new_fc_id) != int:
             flash('There seems to be a problem. If you think this is in error, please contact us.', 'danger')        
@@ -320,23 +337,31 @@ def members(page=0, booked=0):
                 db.session.add(nb)
                 db.session.commit()
                 return redirect(url_for('members', page = 0, booked = nb.id))
-            
-    if form3_new_notebook.validate_on_submit(): #new notebook 
+    
+    # New notebook
+    if form3_new_notebook.validate_on_submit(): 
         nb_title = nohtml(form3_new_notebook.book_title.data)
         if len(nb_title) > 40:
             flash('Please make the Notebook title shorter', 'danger')
             return redirect(url_for('members'))
-        nb = Notebooks(title=nb_title, timestamp=datetime.utcnow(), notebook=g.user)
+        nb = Notebooks(title=nb_title, 
+                       timestamp=datetime.utcnow(), 
+                       notebook=g.user)
         db.session.add(nb)
         nn_title = nohtml(form3_new_notebook.new_note_title.data)
         if len(nn_title) > 40:
              flash('Please make the Note title shorter', 'danger')           
-        nn = Notes(title=nn_title, body=" ", timestamp=datetime.utcnow(), notes_link=nb, note=g.user)
+        nn = Notes(title=nn_title,
+                   body=" ", 
+                   timestamp=datetime.utcnow(), 
+                   notes_link=nb, 
+                   note=g.user)
         db.session.add(nn)
         db.session.commit() 
         return redirect(url_for('members', page = nn.id, booked = nb.id))
     
-    if form2.validate_on_submit(): # new note form
+    # New note
+    if form2.validate_on_submit():
         nbid = form2.hidden2.data
         if nbid == None:
             flash('Notebook not found.  If you think this is in error, please contact us.', 'danger')
@@ -347,12 +372,18 @@ def members(page=0, booked=0):
             if len(tt) > 40:
                 flash('Can you make it smaller please?', 'danger')
                 return redirect(url_for('members'))
-            nn = Notes(title=tt, body=" ", timestamp=datetime.utcnow(), notes_link=nb, note=g.user)
+            nn = Notes(title=tt, 
+                       body=" ", 
+                       timestamp=datetime.utcnow(), 
+                       notes_link=nb, 
+                       note=g.user)
             db.session.add(nn)
             db.session.commit()
-            return redirect(url_for('members', page = nn.id, booked = int(nbid)))
-        
-    if form4_new_note_title.validate_on_submit(): #rename note
+            return redirect(url_for('members', page = nn.id, 
+                                    booked = int(nbid)))
+    
+    # Rename note
+    if form4_new_note_title.validate_on_submit():
         ids = re.search('[0-9]+',form4_new_note_title.hidden_note_id.data)
         if ids == None:
             flash('Note not found.  If you think this is in error, please contact us.', 'danger')
@@ -365,9 +396,11 @@ def members(page=0, booked=0):
             n.title = nn_title
             db.session.add(n)
             db.session.commit()
-            return redirect(url_for('members', page = n.id, booked = n.notebooks_id))
-        
-    if form7_new_fc.validate_on_submit(): #new file cabinet 
+            return redirect(url_for('members', page = n.id, 
+                                    booked = n.notebooks_id))
+    
+    # New file cabinet
+    if form7_new_fc.validate_on_submit():
         fc_title = nohtml(form7_new_fc.fc_title.data)
         if len(fc_title) > 40:
             flash('Please make the File Cabinet title shorter', 'danger')
@@ -377,12 +410,17 @@ def members(page=0, booked=0):
         nb_title = nohtml(form7_new_fc.nb_title.data)
         if len(nb_title) > 40:
              flash('Please make the Notebook title shorter', 'danger')           
-        nb = Notebooks(title=nb_title, timestamp=datetime.utcnow(), notebook=g.user, notebook_link=nfc)
+        nb = Notebooks(title=nb_title, 
+                       timestamp=datetime.utcnow(), 
+                       notebook=g.user, 
+                       notebook_link=nfc)
         db.session.add(nb)
         db.session.commit() 
-        return redirect(url_for('members', page = 0, booked = nb.id))        
+        return redirect(url_for('members', page = 0, 
+                                booked = nb.id))        
     
-    if form5_new_notebook_title.validate_on_submit(): #Rename Notebook
+    # Rename notebook
+    if form5_new_notebook_title.validate_on_submit():
         nbid = re.search('[0-9]+',form5_new_notebook_title.hidden_book_id.data)
         if nbid == None:
                 flash('Notebook not found.  If you think this is in error, please contact us.', 'danger')
@@ -396,9 +434,11 @@ def members(page=0, booked=0):
             nb.title = nb_title
             db.session.add(nb)
             db.session.commit()
-            return redirect(url_for('members', page = 0, booked = nb.id))
-        
-    if form6_new_fc_title.validate_on_submit(): #rename file cabinet title
+            return redirect(url_for('members', page = 0, 
+                                    booked = nb.id))
+    
+    # Rename file cabinet title
+    if form6_new_fc_title.validate_on_submit():
         fcid = re.search('[0-9]+',form6_new_fc_title.hidden_fc_id.data)
         if fcid == None:
                 flash('File Cabinet not found.  If you think this is in error, please contact us.', 'danger')
@@ -414,7 +454,8 @@ def members(page=0, booked=0):
             db.session.commit()
             return redirect(url_for('members'))      
         
-    if form8_new_fcnotebook.validate_on_submit(): #new file cabinet notebook 
+    # New notebook in a file cabinet    
+    if form8_new_fcnotebook.validate_on_submit(): 
         fcid = re.search('[0-9]+',form8_new_fcnotebook.hidden_fc_id2.data)
         if fcid == None:
                 flash('File Cabinet not found.  If you think this is in error, please contact us.', 'danger')
@@ -425,17 +466,26 @@ def members(page=0, booked=0):
             if len(nb_title) > 40:
                 flash('Please make the Notebook title shorter', 'danger')
                 return redirect(url_for('members'))
-            nb = Notebooks(title=nb_title, timestamp=datetime.utcnow(), notebook=g.user, notebook_link=nfc)
+            nb = Notebooks(title=nb_title, 
+                           timestamp=datetime.utcnow(), 
+                           notebook=g.user, 
+                           notebook_link=nfc)
             db.session.add(nb)
             nn_title = nohtml(form8_new_fcnotebook.fcnew_note_title.data)
             if len(nn_title) > 40:
                 flash('Please make the Note title shorter', 'danger')           
-            nn = Notes(title=nn_title, body=" ", timestamp=datetime.utcnow(), notes_link=nb, note=g.user)
+            nn = Notes(title=nn_title, 
+                       body=" ", 
+                       timestamp=datetime.utcnow(), 
+                       notes_link=nb, 
+                       note=g.user)
             db.session.add(nn)
             db.session.commit() 
-            return redirect(url_for('members', page = nn.id, booked = nb.id))  
-        
-    if merge.validate_on_submit(): # Merge two notes
+            return redirect(url_for('members', page = nn.id, 
+                                    booked = nb.id))  
+
+    # Merge two notes    
+    if merge.validate_on_submit(): 
         mergee_id = re.search('[0-9]+',merge.merge_note_id.data)
         if mergee_id == None:
             flash('Note not found.  If you think this is in error, please contact us.', 'danger')
@@ -458,31 +508,32 @@ def members(page=0, booked=0):
                 db.session.add(n)
                 db.session.delete(nn)
                 db.session.commit()
-                return redirect(url_for('members', page=n.id, booked=n.notebooks_id))
+                return redirect(url_for('members', page=n.id, 
+                                        booked=n.notebooks_id))
             
     return render_template("members.html",
-        title = 'Members',
-        user = user,
-        form = form,
-        form2 = form2,
-        form3_new_notebook = form3_new_notebook,
-        form4_new_note_title = form4_new_note_title,
-        form5_new_notebook_title = form5_new_notebook_title,
-        form6_new_fc_title = form6_new_fc_title,
-        form7_new_fc = form7_new_fc,
-        form8_new_fcnotebook = form8_new_fcnotebook,
-        merge = merge,
-        note_counter = note_counter,
-        fc = fc,
-        fcd = fcd,
-        page = page,
-        attach = attach,
-        booked = booked,
-        booked2 = booked2,
-        books = books,
-        form9_move_notebook = form9_move_notebook,
-        notes = notes
-        )
+                            title = 'Members',
+                            user = user,
+                            form = form,
+                            form2 = form2,
+                            form3_new_notebook = form3_new_notebook,
+                            form4_new_note_title = form4_new_note_title,
+                            form5_new_notebook_title = form5_new_notebook_title,
+                            form6_new_fc_title = form6_new_fc_title,
+                            form7_new_fc = form7_new_fc,
+                            form8_new_fcnotebook = form8_new_fcnotebook,
+                            merge = merge,
+                            note_counter = note_counter,
+                            fc = fc,
+                            fcd = fcd,
+                            page = page, #reload with right note selected
+                            attach = attach,
+                            booked = booked, #reload with right notebook selected
+                            booked2 = booked2,
+                            books = books,
+                            form9_move_notebook = form9_move_notebook,
+                            notes = notes)
+
 #=======================Log in / Log out code=======================#    
 @app.route('/login', methods = ['GET', 'POST'])
 @oid.loginhandler
@@ -508,7 +559,9 @@ def after_login(resp):
         nickname = resp.nickname
         if nickname is None or nickname == "":
             nickname = resp.email.split('@')[0]
-        user = User(nickname = nickname, email = resp.email, role = ROLE_USER)
+        user = User(nickname = nickname, 
+                    email = resp.email, 
+                    role = ROLE_USER)
         db.session.add(user)
         db.session.commit()
         remember_me = False
@@ -559,9 +612,9 @@ def user(nickname):
     else:
         form.nickname.data = g.user.nickname
     return render_template('settings.html',
-        form = form,
-        user = user)   
-    
+                            form = form,
+                            user = user)   
+
 #===================Error Handlers===================#
 @app.errorhandler(404)
 def internal_error(error):
@@ -580,6 +633,7 @@ def after_request(response):
     return response
 
 #===================Delete Items===================#
+#Delete Notes
 @app.route('/delete/<int:ids>')
 @login_required
 def delete(ids):
@@ -594,7 +648,7 @@ def delete(ids):
     db.session.commit()
     flash('Your note has been deleted.', 'info')
     return redirect(url_for('members'))
-
+#Delete Notebooks
 @app.route('/deletenb/<int:ids>')
 @login_required
 def deletenb(ids):
@@ -609,7 +663,7 @@ def deletenb(ids):
     db.session.commit()
     flash('Your notebook has been deleted.', 'info')
     return redirect(url_for('members'))
-
+#Delete File Cabinets
 @app.route('/deletefc/<int:ids>')
 @login_required
 def deletefc(ids):
@@ -656,6 +710,7 @@ def gobyebye():
     db.session.commit()    
     flash('Your account is gone forever.  Have a good day!', 'danger')
     return redirect(url_for('index'))
+
 #===================Library Checkout===================#
 def note_check_out(n):
     if n == None:

@@ -38,7 +38,6 @@ class User(db.Model):
     """ def shared_nbs(self):
         return Notebooks.query.join(shares, (shares.c.shared_from_user_id == Notebooks.user_id)).filter(shares.c.shared_to_user_id == self.id).filter(shares.c.shared_noteboook_id == Notebooks.id).order_by(Notebooks.title) """
     
-    
 class Filecabinets(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     title = db.Column(db.String(80))
@@ -70,4 +69,4 @@ class Notes(db.Model):
 
     def __repr__(self):
         return '<Notes %r>' % (self.body)
- 
+    
