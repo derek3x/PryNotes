@@ -173,7 +173,6 @@ def security(filename):
         title = 'Home')    
 #==============================Encrypt/Decrypt=============================#    
 def encrypt_it(s):
-    s = s.encode('ascii', errors='ignore')
     location = 'tmp/kz'
     crypter = keyczar.Crypter.Read(location)
     s_encrypted = crypter.Encrypt(s)
