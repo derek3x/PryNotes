@@ -94,26 +94,23 @@ def htmlwork(doc):
     validTags = ['a', 'abbr', 'acronym', 'address', 'area', 'b', 'bdo', 'big', 'blockquote', 'br', 'caption', 'center', 'cite', 'code', 'col', 'colgroup', 'dd', 'del', 'dfn', 'div', 'dl', 'dt', 'em', 'font', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'i', 'img', 'ins', 'kbd', 'li', 'map', 'ol', 'p', 'pre', 'q', 's', 'samp', 'small', 'span', 'strike', 'strong', 'sub', 'sup', 'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'title', 'tr', 'tt', 'u', 'ul', 'var']
     validAttrs = ['href', 'src', 'width', 'height', 'style', 'WIDTH', 'HEIGHT']
     urlAttrs = 'href src'.split()
-    if doc.find('<p>') != -1 or doc.find('<h') != -1 or doc.find('<div>') != -1 or doc.find('<script>') != -1 or doc.find('onclick=') != -1:
-        soup = BeautifulSoup.BeautifulSoup(doc)       
-        for comment in soup.findAll(text=lambda text: isinstance(text, Comment)):
-            # Get rid of comments (ironic comment)
-            comment.extract()     
-        for tag in soup.findAll(True):
-            if tag.name not in validTags:
-                tag.hidden = True            
-        for tag in soup.findAll(True):
-            if tag.name not in validTags:
-                tag.hidden = True
-            attrs = tag.attrs
-            tag.attrs = []
-            for attr, val in attrs:
-                if attr in validAttrs:
-                    val = re_scripts.sub('', val) # Remove scripts (vbs & js)
-                    tag.attrs.append((attr, val))
-        return soup.renderContents().decode('utf8')                
-    else:
-        return doc
+    soup = BeautifulSoup.BeautifulSoup(doc)       
+    for comment in soup.findAll(text=lambda text: isinstance(text, Comment)):
+        # Get rid of comments (ironic comment)
+        comment.extract()     
+    for tag in soup.findAll(True):
+        if tag.name not in validTags:
+            tag.hidden = True            
+    for tag in soup.findAll(True):
+        if tag.name not in validTags:
+            tag.hidden = True
+        attrs = tag.attrs
+        tag.attrs = []
+        for attr, val in attrs:
+            if attr in validAttrs:
+                val = re_scripts.sub('', val) # Remove scripts (vbs & js)
+                tag.attrs.append((attr, val))
+    return soup.renderContents().decode('utf8')                
 
 def strip_extras(doc):
     #doc_stripped = re.sub('[%s]' % ''.join("'"), "\\'", doc) #Escape ' as it will break everything if you don't - Fixed (kept for reference)
