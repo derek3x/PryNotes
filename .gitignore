@@ -1,6 +1,7 @@
 *.py[cod]
 *.tar.gz
 *.log
+*.bak
 .directory
 app.db
 db_repository
