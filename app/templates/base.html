@@ -15,6 +15,7 @@
     <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
     <!--[if lte IE 8]><meta http-equiv="refresh" content="0;url={{url_for('old_browser')}}" /><![endif]-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8" />
     {% if title %}
     <title>{{title}} - PryNotes</title>
     {% else %}
@@ -76,10 +77,12 @@
     <script type="text/javascript" src="/static/js/notes.js"></script> 
     <script type="text/javascript">
         $(document).ready(function() {
+            {% if page %}
             if ({{page}} !=  0){
                     select_note({{page}}, {{booked}}, '{{booked2}}');
             }
-            $('#summernote').summernote({
+            {% endif %}
+            $('.summernote').summernote({
                 tabsize: 4,
                 height: 560,
                 width: '100%',
@@ -104,6 +107,14 @@
                 }
             });
             $('#summernote').code('<div style="text-align: center;"><span style="text-decoration: underline;"><span style="font-weight: bold;">Please select a note before writing</span></span></div>');
+            {% if note_body %}
+                var html = '{{note_body}}';
+                var shtml = htmlDecode(html);            
+                function htmlDecode(value) {
+                    return $('<div/>').html(value).text();
+                }
+                $('.summernote').code(shtml);
+            {% endif %}
         });
     </script>   
 </body>

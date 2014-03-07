@@ -18,7 +18,6 @@ import base64
 from io import BytesIO
 from keyczar import keyczar
 from flask import jsonify
-import hashlib
 
 UPLOAD_FOLDER = '/static/uploads'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 
@@ -268,46 +267,7 @@ def select_note():
         return jsonify({
                 'text': decrypted,
                 'title' : n.title,
-                'stamps' : time})   
-
-#====================Direct Link Shares (read only)=====================#
-# Create the shares
-@app.route('/create_share/<int:note_id>')
-@login_required
-def create_share(note_id):
-    if note_id == None:
-        flash('Note not found.  If you think this is in error, please contact us.', 'danger')
-        return redirect(url_for('members'))
-    n = Notes.query.get(note_id)
-    if note_check_out(n):
-        key = str(n.id) + str(g.user.id)
-        link = hashlib.sha224(str(n.title) + "," + key).hexdigest()
-        fluff = randint(2,98)
-        link = link + "-" + str(n.id) + "-" + str(fluff)
-        flash('www.prynotes.com/shared_note/' + str(link), 'info')
-        return redirect(url_for('members'))
-    return redirect(url_for('members'))
-
-# Read the shares    
-@app.route('/shared_note/<link>')
-def shared_note(link):
-    note_id = re.search('[0-9]+',link.split('-')[1])
-    if note_id == None:
-        flash('There seems to be an error here, sorry.  We will check into this', 'danger')
-        return redirect(url_for('index'))
-    note_id = int(note_id.group(0))
-    n = Notes.query.get(note_id)        
-    key = str(n.id) + str(n.user_id)
-    if link.split('-')[0] == hashlib.sha224(str(n.title) + "," + key).hexdigest():
-        note_body = decrypt_it(n.body)
-        return render_template("shared_notes.html", 
-                                title = 'Shared Notes',
-                                note_title = n.title,
-                                note_body = note_body.decode('utf8', errors='ignore'),
-                                note_time = n.timestamp
-                                )
-    flash('There has been an error.  Sorry, we will look into the problem','danger')
-    return redirect(url_for('index'))
+                'stamps' : time})          
 
 #==============================Members=============================#    
 @app.route('/members', methods = ['GET', 'POST'])
@@ -327,7 +287,7 @@ def members(page=0, booked=0):
     form9_move_notebook = Move_Notebook()
     merge = Merge()
     attach = Attach(csrf_enabled=False)
-    booked2 = "" # notebook title
+    booked2 = ""
     fcd = 0
     note_counter = {}
 

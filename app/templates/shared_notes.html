@@ -1,0 +1,23 @@
+<!-- extend base layout -->
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    {% include 'flash.html' %}
+    <div class="col-md-10">
+    <div class="well well-lg">    
+        <a id="pintMe" href="#" type="button" onclick="openWin_shared()" class="btnxs btn-default pull-right"><span class="glyphicon glyphicon-print"></span></a>
+        <p id="note_header" style="text-align:center;color:#555555">{{note_title}}</p>
+        <div class="summernote"></div>
+        <p id="note_footer" class ="pull-right" style="text-align:center;color:#555555;font-size:85%">{{momentjs(note_time).calendar()}}</p>
+    </div>
+    </div>
+    <div class="col-md-2">
+    <div class="panel panel-danger"> 
+        <div class="panel-heading">Shared Note</div>
+        <div class="panel-body">    
+            This shared note is in read only mode.  You can edit this note and print the edits, but you can not save note.  The note will be unchanged for the original author. 
+        </div>
+    </div>        
+    </div>
+</div>
+{% endblock %} 

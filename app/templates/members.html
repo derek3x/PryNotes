@@ -165,13 +165,17 @@
                 <form action="" method="post" enctype="multipart/form-data">
                     {{attach.hidden_tag()}}
                     {{attach.attach_it(id="upload", style="display:none")}}
+                    <a href="" type="button" class="btnxs btn-default dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-link"></span></a>
+                        <ul class="dropdown-menu" role="menu" style="position: relative">
+                            <li><a id="share_link" href="#">Create Shared Link</a></li>
+                        </ul>                    
                     <a id="pintMe" href="#" type="button" onclick="openWin()" class="btnxs btn-default"><span class="glyphicon glyphicon-print"></span></a>                    
                     <a id="clip" href="#" type="button" onclick="$('input[id=upload]').click();" class="btnxs btn-default"><span class="glyphicon glyphicon-paperclip"></span></a>
                 </form>
             </div>
             <form action="" method="post" name="editor">                
                 {{form.hidden_tag()}}
-                {{form.editor1(id="summernote", style="height: 70%")}}
+                {{form.editor1(id="summernote", class="summernote", style="height: 70%")}}
                 {{form.hidden(style="display:none")}}
                 {{form.hidden3(style="display:none")}}
                 <a id="save_btn" type="button" class="btn btn-primary disabled"><span id="save_btn_span" class="glyphicon glyphicon-floppy-disk"></span> Save changes</a>

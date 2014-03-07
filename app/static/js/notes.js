@@ -18,6 +18,7 @@ function select_note(id, bookid, booktitle) {
     document.getElementById("notebookchange").className = "btn btn-default dropdown-toggle btn-sm";
     document.getElementById("save_btn").className = "btn btn-primary";
     document.getElementById("save_btn").href = "javascript:save_note('" + id + "','" + bookid + "','False');";
+    document.getElementById("share_link").href = "/create_share/" + id;
     var arrow = ' <span class="caret"></span>'
     document.getElementById("notebookchange").innerHTML = booktitle + arrow;
     jQuery.post('/select_note', {
@@ -86,6 +87,15 @@ jQuery(".confirmaccount").confirm({
 function openWin() {
     var w = window.open();
     var html = $("#summernote").code();
+    var title = $('#note_header').html();
+    $(w.document.body).html(html);
+    w.document.title = title;
+    w.print();
+    w.close();
+}
+function openWin_shared() {
+    var w = window.open();
+    var html = $(".summernote").code();
     var title = $('#note_header').html();
     $(w.document.body).html(html);
     w.document.title = title;
