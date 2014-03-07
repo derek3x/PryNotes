@@ -4,12 +4,14 @@ import os
 from flask.ext.login import LoginManager
 from flask.ext.openid import OpenID
 from config import basedir
+from momentjs import momentjs
 
 UPLOAD_FOLDER = os.path.join(basedir, 'app/static/uploads/')
 
 app = Flask(__name__, static_folder='static')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+app.jinja_env.globals['momentjs'] = momentjs
 app.config.from_object('config')
 db = SQLAlchemy(app)
 

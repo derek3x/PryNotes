@@ -22,6 +22,7 @@
     {% endif %}
 </head>
 <body>
+    <script type="text/javascript" src="/static/js/moment.min.js"></script>
     <div class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -72,32 +73,37 @@
     <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>  
     <script type="text/javascript" src="/static/js/summernote.min.js"></script>
     <script type="text/javascript" src="/static/js/jquery.confirm.js"></script>
-    <script type="text/javascript" src="/static/js/moment.min.js"></script>    
     <script type="text/javascript" src="/static/js/notes.js"></script> 
     <script type="text/javascript">
         $(document).ready(function() {
-        if ({{page}} !=  0){
-            select_note({{page}}, {{booked}}, '{{booked2}}');
-        }
-        $('#summernote').summernote({tabsize: 4, height: 560, width:'100%',   
-    toolbar: [
-    ['style', ['style']],
-    ['style', ['bold', 'italic', 'underline', 'clear']],
-    ['fontsize', ['fontsize']],
-    ['fontname', ['fontname']],
-    ['color', ['color']],
-    ['para', ['ul', 'ol', 'paragraph']],
-    ['height', ['height']],
-    ['insert', ['picture', 'link']],
-    ['table', ['table']],
-    ['fullscreen', ['fullscreen']],
-    ['help', ['help']]
-  ],        onkeydown: function(e) {
-            $("#save_btn_span").removeClass('glyphicon glyphicon-floppy-saved').addClass('glyphicon glyphicon-floppy-disk');},
-            codemirror: {
-                theme: 'monokai'}
-        });
-        $('#summernote').code('<div style="text-align: center;"><span style="text-decoration: underline;"><span style="font-weight: bold;">Please select a note before writing</span></span></div>');                
+            if ({{page}} !=  0){
+                    select_note({{page}}, {{booked}}, '{{booked2}}');
+            }
+            $('#summernote').summernote({
+                tabsize: 4,
+                height: 560,
+                width: '100%',
+                toolbar: [
+                    ['style', ['style']],
+                    ['style', ['bold', 'italic', 'underline', 'clear']],
+                    ['fontsize', ['fontsize']],
+                    ['fontname', ['fontname']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['height', ['height']],
+                    ['insert', ['picture', 'link']],
+                    ['table', ['table']],
+                    ['fullscreen', ['fullscreen']],
+                    ['help', ['help']]
+                ],
+                onkeydown: function (e) {
+                    $("#save_btn_span").removeClass('glyphicon glyphicon-floppy-saved').addClass('glyphicon glyphicon-floppy-disk');
+                },
+                codemirror: {
+                    theme: 'monokai'
+                }
+            });
+            $('#summernote').code('<div style="text-align: center;"><span style="text-decoration: underline;"><span style="font-weight: bold;">Please select a note before writing</span></span></div>');
         });
     </script>   
 </body>
