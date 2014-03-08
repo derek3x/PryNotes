@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <!--[if lte IE 8]><meta http-equiv="refresh" content="0;url={{url_for('old_browser')}}" /><![endif]-->
     <link href="/static/css/summernote.css" rel="stylesheet" media="screen">
     <link href="{{ url_for('.static', filename = 'css/bootstrap.min.css') }}" rel="stylesheet" media="screen">
     <link href="/static/css/font-awesome.min.css" rel="stylesheet" media="screen">
@@ -10,11 +11,9 @@
         .note-editor.fullscreen { width: 100% !important; }        
     </style>
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    <meta name="description" content="Create notes and access them anywhere.  Stay organized and keep your data safe with encrypted notes.  We are a privacy concerned website that is trying to provide a safe alternative.">
-    <meta http-equiv="content-type" content="text/html;charset=UTF-8">
+    <META name="description" content="Create notes and access them anywhere.  Stay organized and keep your data safe with encrypted notes.  We are a privacy concerned website that is trying to provide a safe alternative.">
     <META NAME="ROBOTS" CONTENT="INDEX, FOLLOW">
-    <!--[if lte IE 8]><meta http-equiv="refresh" content="0;url={{url_for('old_browser')}}" /><![endif]-->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <META name="viewport" content="width=device-width, initial-scale=1.0">
     <META http-equiv="Content-Type" content="text/html; charset=utf-8" />
     {% if title %}
     <title>{{title}} - PryNotes</title>
@@ -69,7 +68,7 @@
         <hr>
         <p>&copy; PryNotes 2014. Open Source: <a href="https://github.com/derek3x/PryNotes" target="_blank">GitHub.</a>  Powered by <a href="http://hackerwins.github.io/summernote/" target="_blank"> Summernote</a> and <a href="http://getbootstrap.com" target="_blank"> Bootstrap</a></p>
     </div>  
-<!-- Javascript -->
+    <!-- Javascript -->
     <script type="text/javascript" src="/static/js/jquery-latest.js"></script>
     <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>  
     <script type="text/javascript" src="/static/js/summernote.min.js"></script>

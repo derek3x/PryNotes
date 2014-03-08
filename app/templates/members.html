@@ -1,93 +1,88 @@
 {% extends "base.html" %}
 {% block content %}
 {% include 'flash.html' %}
-    <div class="container-fluid">
-        <div class="col-md-4">
+<div class="container-fluid">
+    <div class="col-md-4">
         <div class="well well-lg" style="max-height:810px;overflow: auto;">
             <h3>Hello, {{user.nickname}}</h3>
             <hr>
-                <!---      File Cabinets              -->
-                <h5><a class="badge pull-right" data-toggle="modal" data-target="#new_fc" style="background-color: #3a87ad">New</a></h5>
-                <h5><span class="glyphicon glyphicon-inbox"></span>File Cabinets:</h5>            
+            <!---      File Cabinets              -->
+            <h5><a class="badge pull-right" data-toggle="modal" data-target="#new_fc" style="background-color: #3a87ad">New</a></h5>
+            <h5><span class="glyphicon glyphicon-inbox"></span>File Cabinets:</h5>
             <div class="panel-group" id="accordion">
                 {% for folder in fc %}
-                    <div id="FileCabinet" class="panel panel-default">
-                        <div class="panel-heading">
+                <div id="FileCabinet" class="panel panel-default">
+                    <div class="panel-heading">
                         <div class="dropdown">
                             <h4 class="panel-title" style="max-height:10px;">
-                            <a href="#" role="button" class="pull-right" onclick="new_notebook_in_fc({{folder.id}})"><small><span role="button" class="glyphicon glyphicon-plus"></span></small></a>
+                                <a href="#" role="button" class="pull-right" onclick="new_notebook_in_fc({{folder.id}})"><small><span role="button" class="glyphicon glyphicon-plus"></span></small></a>
                                 <a data-toggle="collapse" data-parent="#accordion" href="#collapsenb{{loop.index}}">
                                 {{folder.title}}
                                 </a>
-                               <a class="dropdown-toggle" data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
+                                <a class="dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
                                 </a>    
                                 <ul class="dropdown-menu pull-right" style="z-index: 10000; position: relative; " role="menu">
                                     <li><a href="#" data-toggle="modal" onclick="caret_clickFC('{{folder.id}}','{{folder.title}}')" data-target=".bs-modal-smfc">Rename</a></li>
                                     <li><a href="{{ url_for('deletefc', ids = folder.id) }}" class="confirmfc">Delete</a></li>
-                                </ul>   
-                                </h4>                                
-                            </div>                                                                
-                        </div> 
-                     
+                                </ul>
+                            </h4>
+                        </div>
+                    </div>
                     <div id="collapsenb{{loop.index}}" class="{% if fcd == folder.id %}panel-collapse collapse in{% else %}panel-collapse collapse{% endif %}">
-                    {% for book in books %}
-                    {% if book.filecabinet == folder.id %}  
-                    
-                            <div class="panel panel-default" style="margin-top:0;">
-                            <div class="panel-heading">  
-                            <div class="dropdown">
-                                <div class="panel-title" style="max-height:8px;margin-top:0;">
-                                <h6 style="color:#555555;">
-                                <a href="#" class="pull-right" data-toggle="modal" data-target="#myModal" onclick="newnoteid('{{book.id}}')"><small><span class="glyphicon glyphicon-plus"></span></small></a>
-                                <a id="{{book.id}}" data-toggle="collapse" data-parent="#FileCabinet" href="#collapsen{{book.id}}" style="color:#555555;">
-                                    <span class="glyphicon glyphicon-book"></span>{{book.title}}
-                                </a>
-                               <a class="dropdown-toggle" data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                    <small><span class="badge" id="badge{{loop.index}}" style="background-color: #999999;font-size:90%;">{% if book.id in note_counter %} {{note_counter[book.id]}} {% endif %}</span></small>
-                                </a>    
-                                <ul class="dropdown-menu pull-right" style="z-index: 10000; position: relative; " role="menu">
-                                    <li><a href="#" data-toggle="modal" onclick="caret_clickNB('{{book.id}}','{{book.title}}')" data-target=".bs-modal-smmove">Move</a></li>
-                                    <li><a href="#" data-toggle="modal" onclick="caret_clickNB('{{book.id}}','{{book.title}}')" data-target=".bs-modal-smn">Rename</a></li>
-                                    <li><a href="{{ url_for('removenb', ids = book.id) }}" class="confirm">Remove From Cabinet</a></li>
-                                    <li><a href="{{ url_for('deletenb', ids = book.id) }}" class="confirmnb">Delete</a></li>
-                                </ul>   
-                                </h6>                                
-                            </div>                                
+                        {% for book in books %}
+                        {% if book.filecabinet == folder.id %}  
+                        <div class="panel panel-default" style="margin-top:0;">
+                            <div class="panel-heading">
+                                <div class="dropdown">
+                                    <div class="panel-title" style="max-height:8px;margin-top:0;">
+                                        <h6 style="color:#555555;">
+                                            <a href="#" class="pull-right" data-toggle="modal" data-target="#myModal" onclick="newnoteid('{{book.id}}')"><small><span class="glyphicon glyphicon-plus"></span></small></a>
+                                            <a id="{{book.id}}" data-toggle="collapse" data-parent="#FileCabinet" href="#collapsen{{book.id}}" style="color:#555555;">
+                                            <span class="glyphicon glyphicon-book"></span>{{book.title}}
+                                            </a>
+                                            <a class="dropdown-toggle" data-toggle="dropdown">
+                                            <span class="caret"></span>
+                                            <span class="sr-only">Toggle Dropdown</span>
+                                            <small><span class="badge" id="badge{{loop.index}}" style="background-color: #999999;font-size:90%;">{% if book.id in note_counter %} {{note_counter[book.id]}} {% endif %}</span></small>
+                                            </a>    
+                                            <ul class="dropdown-menu pull-right" style="z-index: 10000; position: relative; " role="menu">
+                                                <li><a href="#" data-toggle="modal" onclick="caret_clickNB('{{book.id}}','{{book.title}}')" data-target=".bs-modal-smmove">Move</a></li>
+                                                <li><a href="#" data-toggle="modal" onclick="caret_clickNB('{{book.id}}','{{book.title}}')" data-target=".bs-modal-smn">Rename</a></li>
+                                                <li><a href="{{ url_for('removenb', ids = book.id) }}" class="confirm">Remove From Cabinet</a></li>
+                                                <li><a href="{{ url_for('deletenb', ids = book.id) }}" class="confirmnb">Delete</a></li>
+                                            </ul>
+                                        </h6>
+                                    </div>
                                 </div>
                             </div>
-                            
-                        <div id="collapsen{{ book.id }}" class="{% if booked == book.id %}panel-collapse collapse in{% else %}panel-collapse collapse{% endif %}">
-                            <div class="panel-body">
-                            <ul class="list-group">
-                                {% for note in notes %}
-                                    {% if note.notebooks_id == book.id %} 
-                                    <div class="dropdown">                                    
-                                    <a role="button" id="{{note.id}}" href="javascript:select_note('{{note.id}}', '{{book.id}}', '{{book.title}}');" class="list-group-item-text" style="color:#555555"><span class="glyphicon glyphicon-file"></span>{{note.title}}</a>
-                                        <a class="dropdown-toggle" data-toggle="dropdown">
-                                        <span class="caret"></span>
-                                        <span class="sr-only">Toggle Dropdown</span>
-                                        </a>
-                                        <ul class="dropdown-menu pull-right" style="z-index: 10000; position: relative; " role="menu">
-                                            <li><a href="#" data-toggle="modal" onclick="caret_click('{{note.id}}','{{note.title}}')" data-target=".bs-modal-sm">Rename</a></li>
-                                            <li><a href="{{ url_for('delete', ids = note.id) }}" class="confirm">Delete</a></li>
-                                            <li><a href="#" data-toggle="modal" onclick="caret_merge('{{note.id}}')" data-target=".bs-modal-smerge">Merge Note</a></li>
-                                        </ul>                                        
-                                    </div>                                    
-                                    {% endif %}
-                                {% endfor %}
-                            </ul>
+                            <div id="collapsen{{ book.id }}" class="{% if booked == book.id %}panel-collapse collapse in{% else %}panel-collapse collapse{% endif %}">
+                                <div class="panel-body">
+                                    <ul class="list-group">
+                                        {% for note in notes %}
+                                        {% if note.notebooks_id == book.id %} 
+                                        <div class="dropdown">
+                                            <a role="button" id="{{note.id}}" href="javascript:select_note('{{note.id}}', '{{book.id}}', '{{book.title}}');" class="list-group-item-text" style="color:#555555"><span class="glyphicon glyphicon-file"></span>{{note.title}}</a>
+                                            <a class="dropdown-toggle" data-toggle="dropdown">
+                                            <span class="caret"></span>
+                                            <span class="sr-only">Toggle Dropdown</span>
+                                            </a>
+                                            <ul class="dropdown-menu pull-right" style="z-index: 10000; position: relative; " role="menu">
+                                                <li><a href="#" data-toggle="modal" onclick="caret_click('{{note.id}}','{{note.title}}')" data-target=".bs-modal-sm">Rename</a></li>
+                                                <li><a href="{{ url_for('delete', ids = note.id) }}" class="confirm">Delete</a></li>
+                                                <li><a href="#" data-toggle="modal" onclick="caret_merge('{{note.id}}')" data-target=".bs-modal-smerge">Merge Note</a></li>
+                                            </ul>
+                                        </div>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
                             </div>
-                        </div>                            
-                            
-                            </div>
-                    
-                    {% endif %}
-                    {% endfor %}                        
-                    </div>         
+                        </div>
+                        {% endif %}
+                        {% endfor %}                        
+                    </div>
                 </div>
                 {% endfor %} 
                 <!---      Notebooks              -->
@@ -95,87 +90,86 @@
                 <h5><span class="glyphicon glyphicon-book"></span>Notebooks:</h5>
                 {% for book in books %}
                 {% if book.filecabinet == None %}
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
                         <div class="dropdown">
                             <h4 class="panel-title" style="max-height:10px;">
-                            <a href="#" class="pull-right" data-toggle="modal" data-target="#myModal" onclick="newnoteid('{{book.id}}')"><small><span class="glyphicon glyphicon-plus"></span></small></a>
+                                <a href="#" class="pull-right" data-toggle="modal" data-target="#myModal" onclick="newnoteid('{{book.id}}')"><small><span class="glyphicon glyphicon-plus"></span></small></a>
                                 <a role="button" data-toggle="collapse" data-parent="#accordion" id="{{book.id}}" href="#collapse{{ loop.index }}">
                                 {{book.title}}
-                                
                                 </a>
                                 <a class="dropdown-toggle" data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                    <small><span class="badge" id="badge{{loop.index}}" style="background-color: #999999;font-size:71%;">{% if book.id in note_counter %} {{note_counter[book.id]}} {% endif %}</span></small>
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                                <small><span class="badge" id="badge{{loop.index}}" style="background-color: #999999;font-size:71%;">{% if book.id in note_counter %} {{note_counter[book.id]}} {% endif %}</span></small>
                                 </a>    
                                 <ul class="dropdown-menu pull-right" style="z-index: 10000; position: relative; " role="menu">
                                     <li><a href="#" data-toggle="modal" onclick="caret_clickNB('{{book.id}}','{{book.title}}')" data-target=".bs-modal-smmove">Move</a></li>
                                     <li><a href="#" data-toggle="modal" onclick="caret_clickNB('{{book.id}}','{{book.title}}')" data-target=".bs-modal-smn">Rename</a></li>
                                     <li><a href="{{ url_for('deletenb', ids = book.id) }}" class="confirmnb">Delete</a></li>
-                                </ul>                                              
+                                </ul>
                             </h4>
-                            </div>
-                        </div>
-                        <div id="collapse{{ loop.index }}" class="{% if booked == book.id %}panel-collapse collapse in{% else %}panel-collapse collapse{% endif %}">
-                            <div class="panel-body">
-                            <ul class="list-group">
-                                {% for note in notes %}
-                                    {% if note.notebooks_id == book.id %}
-                                    <div class="dropdown">
-                                        <a role="button" id="{{note.id}}" href="javascript:select_note('{{note.id}}', '{{book.id}}', '{{book.title}}');" class="list-group-item-text" style="color:#555555"><span class="glyphicon glyphicon-file"></span>{{note.title}}</a>
-                                        <a class="dropdown-toggle" data-toggle="dropdown">
-                                        <span class="caret"></span>
-                                        <span class="sr-only">Toggle Dropdown</span>
-                                        </a>
-                                        <ul class="dropdown-menu pull-right" style="z-index: 10000; position: relative; " role="menu">
-                                            <li><a href="#" data-toggle="modal" onclick="caret_click('{{note.id}}','{{note.title}}')" data-target=".bs-modal-sm">Rename</a></li>
-                                            <li><a href="{{ url_for('delete', ids = note.id) }}" class="confirm">Delete</a></li>
-                                            <li><a href="#" data-toggle="modal" onclick="caret_merge('{{note.id}}')" data-target=".bs-modal-smerge">Merge Note</a></li>
-                                        </ul>                                        
-                                    </div>
-                                    {% endif %}
-                                {% endfor %}
-                            </ul>
-                            </div>
                         </div>
                     </div>
-                    {% endif %}
+                    <div id="collapse{{ loop.index }}" class="{% if booked == book.id %}panel-collapse collapse in{% else %}panel-collapse collapse{% endif %}">
+                        <div class="panel-body">
+                            <ul class="list-group">
+                                {% for note in notes %}
+                                {% if note.notebooks_id == book.id %}
+                                <div class="dropdown">
+                                    <a role="button" id="{{note.id}}" href="javascript:select_note('{{note.id}}', '{{book.id}}', '{{book.title}}');" class="list-group-item-text" style="color:#555555"><span class="glyphicon glyphicon-file"></span>{{note.title}}</a>
+                                    <a class="dropdown-toggle" data-toggle="dropdown">
+                                    <span class="caret"></span>
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                    </a>
+                                    <ul class="dropdown-menu pull-right" style="z-index: 10000; position: relative; " role="menu">
+                                        <li><a href="#" data-toggle="modal" onclick="caret_click('{{note.id}}','{{note.title}}')" data-target=".bs-modal-sm">Rename</a></li>
+                                        <li><a href="{{ url_for('delete', ids = note.id) }}" class="confirm">Delete</a></li>
+                                        <li><a href="#" data-toggle="modal" onclick="caret_merge('{{note.id}}')" data-target=".bs-modal-smerge">Merge Note</a></li>
+                                    </ul>
+                                </div>
+                                {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
                 {% endfor %}                
             </div>
         </div>
-        </div>
-        <!-- Editor Side (Right Side) -->
-        <div class="col-md-8">
+    </div>
+    <!--        Editor Side (Right Side)        -->
+    <div class="col-md-8">
         <div class="well well-lg">
             <p id="note_header" style="text-align:center;color:#555555"></p>
             <!-- Buttons Along The Top Of Editor -->
             <div class="btn-group">
-            <button type="button" class="btn btn-default dropdown-toggle btn-sm disabled" data-toggle="dropdown" id="notebookchange">
+                <button type="button" class="btn btn-default dropdown-toggle btn-sm disabled" data-toggle="dropdown" id="notebookchange">
                 Change Notebook <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" role="menu" style="max-height: 400px; overflow: auto;">
-                {% for book in books %}
+                </button>
+                <ul class="dropdown-menu" role="menu" style="max-height: 400px; overflow: auto;">
+                    {% for book in books %}
                     <li ><a href="#" id="{{book.id}}" onclick="changenotebook('{{book.id}}','{{book.title}}')">{{book.title}}</a></li>
                     <li class="divider"></li>
-                {% endfor %}
-            </ul>
+                    {% endfor %}
+                </ul>
             </div>
             <div class="btn-group pull-right">
                 <form action="" method="post" enctype="multipart/form-data">
                     {{attach.hidden_tag()}}
                     {{attach.attach_it(id="upload", style="display:none")}}
                     <a href="" type="button" class="btnxs btn-default dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-link"></span></a>
-                        <ul class="dropdown-menu" role="menu" style="position: relative">
-                            <li><a id="share_link" href="#">Create Shared Link</a></li>
-                        </ul>                    
+                    <ul class="dropdown-menu" role="menu" style="position: relative">
+                        <li><a id="share_link" href="#">Create Shared Link</a></li>
+                    </ul>
                     <a id="pintMe" href="#" type="button" onclick="openWin()" class="btnxs btn-default"><span class="glyphicon glyphicon-print"></span></a>                    
                     <a id="clip" href="#" type="button" onclick="$('input[id=upload]').click();" class="btnxs btn-default"><span class="glyphicon glyphicon-paperclip"></span></a>
                 </form>
             </div>
-            <form action="" method="post" name="editor">                
+            <form action="" method="post" name="editor">
                 {{form.hidden_tag()}}
-                {{form.editor1(id="summernote", class="summernote", style="height: 70%")}}
+                {{form.editor1(id="summernote", class="summernote")}}
                 {{form.hidden(style="display:none")}}
                 {{form.hidden3(style="display:none")}}
                 <a id="save_btn" type="button" class="btn btn-primary disabled"><span id="save_btn_span" class="glyphicon glyphicon-floppy-disk"></span> Save changes</a>
@@ -183,8 +177,7 @@
                 <p id="note_footer" class ="pull-right" style="text-align:center;color:#555555;font-size:85%"></p>
             </form>
         </div>
-        </div>    
-    <!-- /Editor Side (Right Side) -->
+    </div>
     {% include 'modal.html' %}
-    </div> <!-- /container -->
-{% endblock %} 
+</div>
+{% endblock %}
