@@ -29,6 +29,7 @@ function select_note(id, bookid, booktitle) {
         localTime = moment(localTime).format('MMMM Do YYYY, h:mm:ss a');
         $('#note_header').html(select_note['title']);
         $('#note_footer').html(localTime);
+        $('#to_pdf').attr("href", '/' + select_note['title'] + '_' + id + '.pdf')
     });
 }
 

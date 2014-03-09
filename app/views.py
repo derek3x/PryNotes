@@ -19,6 +19,7 @@ from io import BytesIO
 from keyczar import keyczar
 from flask import jsonify
 import hashlib
+from flask_weasyprint import HTML, render_pdf
 
 UPLOAD_FOLDER = '/static/uploads'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 
@@ -36,6 +37,21 @@ def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
+#========================Save to PDF=============================#
+@app.route('/<note_title>_<note_id>.pdf')
+@login_required
+def makePDF(note_title,note_id):
+    ids = re.search('[0-9]+',note_id)
+    if ids == None:
+        flash('Note not found.  If you think this is in error, please contact us.', 'danger')
+        return redirect(url_for('members'))            
+    n = Notes.query.get(int(ids.group(0)))
+    if note_check_out(n):
+        html = decrypt_it(n.body).decode('utf8', errors='ignore')
+        return render_pdf(HTML(string=html))
+    else:
+        return redirect(url_for('members'))          
+    
 #========================HTML Stripers and Fixers=============================#
 """
 Strips the html down if it has characteristics of a copy and paste from a website.  

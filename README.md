@@ -33,6 +33,7 @@ Then Install:
     flask/bin/pip install beautifulsoup
     flask/bin/pip install Image
     flask/bin/pip install python-keyczar --pre
+    flask/bin/pip install Flask-WeasyPrint
     
 Create Encryption Keys:
     
