@@ -53,3 +53,5 @@ To Run:
 Browser:
 
     localhost:5000
+    
+*If you have problems installing Flask-WeasyPrint.  This is due to LXML.  A quick google search will show you the extra packages you need to install for your Operating System.  It is different for each O/S.
