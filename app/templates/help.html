@@ -6,7 +6,7 @@
 <div class="col-md-6">
 <div class="panel panel-info">
   <div class="panel-heading">
-    <h3 class="panel-title">Help Items:</h3>
+    <h3 class="panel-title"><span class="glyphicon glyphicon-question-sign"></span> Help Items:</h3>
   </div>
 <div class="panel-body">
 <div class="panel-group" id="accordion">
@@ -260,7 +260,7 @@
 <div class="col-md-4">
 <div class="panel panel-info">
   <div class="panel-heading">
-    <h3 class="panel-title">Quick FAQ:</h3>
+    <h3 class="panel-title"><span class="glyphicon glyphicon-th-list"></span> Quick FAQ:</h3>
   </div>
   <div class="panel-body">
   <p>Can I share notes?</p><p class="pull-right">Yes.  With read-only shared links</p>
@@ -292,5 +292,9 @@
   </div>
 </div>
 </div>
+
+    <p><a type="button" class="btn btn-success" href="{{url_for('learnmore')}}"><span class="glyphicon glyphicon-info-sign"></span> Learn More Page</a></p>
+    <p><a type="button" class="btn btn-success" href="{{url_for('first_run')}}"><span class="glyphicon glyphicon-info-sign"></span> First Run Page  </a></p>
+
 </div>
 {% endblock %} 

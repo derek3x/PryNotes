@@ -6,10 +6,10 @@
     <div class="btn-group-xs">
         <a href="{{url_for('gobyebye')}}" class="btn btn-danger pull-right confirmaccount"> Delete Account</a>
     </div>
-    <h2>User: {{user.nickname}}</h2>
+    <h2><span class="glyphicon glyphicon-user"></span> User: {{user.nickname}}</h2>
     {% if user.last_seen %}<p><em>Last seen: {{momentjs(user.last_seen).calendar()}}</em></p>{% endif %}
     <hr>
-    <h3>Edit Your Nickname:</h3>
+    <h3><span class="glyphicon glyphicon-pencil"></span> Edit Your Nickname:</h3>
     <form action="" method="post" name="edit">
         {{form.hidden_tag()}}
         <div class="form-group">
