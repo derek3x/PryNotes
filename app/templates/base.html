@@ -77,6 +77,7 @@
     <script type="text/javascript" src="/static/js/notes.js"></script> 
     <script type="text/javascript">
         $(document).ready(function() {
+            var heights = $( document ).height();
             {% if page %}
             if ({{page}} !=  0){
                     select_note({{page}}, {{booked}}, '{{booked2}}');
@@ -84,7 +85,7 @@
             {% endif %}
             $('.summernote').summernote({
                 tabsize: 4,
-                height: 560,
+                height: heights - 350,
                 width: '100%',
                 toolbar: [
                     ['style', ['style']],
