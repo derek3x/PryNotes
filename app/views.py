@@ -335,6 +335,7 @@ def shared_note(link):
         note_body = decrypt_it(n.body)
         return render_template("shared_notes.html", 
                                 title = 'Shared Notes',
+                                link = link,
                                 note_title = n.title,
                                 note_body = note_body.decode('utf8', errors='ignore'),
                                 note_time = n.timestamp
@@ -342,6 +343,38 @@ def shared_note(link):
     flash('There has been an error.  Sorry, we will look into the problem','danger')
     return redirect(url_for('index'))
 
+# Save a shared note to account
+@app.route('/save_shared/<link>')
+@login_required
+def save_shared(link):
+    note_id = re.search('[0-9]+',link.split('-')[1])
+    if note_id == None:
+        flash('There seems to be an error here, sorry.  We will check into this', 'danger')
+        return redirect(url_for('index'))
+    note_id = int(note_id.group(0))
+    n = Notes.query.get(note_id)        
+    key = str(n.id) + str(n.user_id)
+    if link.split('-')[0] == hashlib.sha224(str(n.title) + "," + key).hexdigest():
+        if not g.user.notebooks.filter_by(title = 'Shared Notes').first():
+            nb = Notebooks(title="Shared Notes", 
+                        timestamp=datetime.utcnow(), 
+                        notebook=g.user)
+            db.session.add(nb)
+        else:
+            #User.query.filter_by(nickname = nickname).first()
+            nb = g.user.notebooks.filter_by(title = 'Shared Notes').first()
+        note_body = decrypt_it(n.body) #this is here due to real server having slightly different encryption (padding)
+        nn = Notes(title=n.title,
+                   body=encrypt_it(note_body), 
+                   timestamp=datetime.utcnow(), 
+                   notes_link=nb, 
+                   note=g.user)  
+        db.session.add(nn)
+        db.session.commit()
+        return redirect(url_for('members'))
+    flash('There has been an error.  Sorry, we will look into the problem','danger')
+    return redirect(url_for('index'))    
+        
 #==============================Members=============================#    
 @app.route('/members', methods = ['GET', 'POST'])
 @app.route('/members/<int:page>/<int:booked>', methods = ['GET', 'POST'])

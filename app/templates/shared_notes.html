@@ -5,7 +5,12 @@
     {% include 'flash.html' %}
     <div class="col-md-10">
     <div class="well well-lg">    
-        <a id="pintMe" href="#" type="button" onclick="openWin_shared()" class="btnxs btn-default pull-right"><span class="glyphicon glyphicon-print"></span></a>
+        <a id="pintMe" href="#" type="button" onclick="openWin_shared()" class="btn btn-success pull-right"><span class="glyphicon glyphicon-print"></span> Print</a>
+        {% if g.user.is_authenticated() %}
+            <p><a id="save_to_notes" href="{{url_for('save_shared', link=link)}}" type="button" class="btn btn-success pull-left"><span class="glyphicon glyphicon-save"></span>Save to your notes</a></p>
+        {% else %}
+            <p></p>
+        {% endif %}
         <p id="note_header" style="text-align:center;color:#555555">{{note_title}}</p>
         <div class="summernote"></div>
         <p id="note_footer" class ="pull-right" style="text-align:center;color:#555555;font-size:85%">{{momentjs(note_time).calendar()}}</p>
@@ -15,7 +20,8 @@
     <div class="panel panel-danger"> 
         <div class="panel-heading">Shared Note</div>
         <div class="panel-body">    
-            This shared note is in read only mode.  You can edit this note and print the edits, but you can not save note.  The note will be unchanged for the original author. 
+            <p>This shared note is in read only mode.  You can edit this note and print the edits, but you can not save note.  The note will be unchanged for the original author. </p>
+            <p>If you are logged into PryNotes you can save a copy of the originally shared note to your own account.</p>
         </div>
     </div>        
     </div>
