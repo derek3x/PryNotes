@@ -1,4 +1,5 @@
 function save_note(id, bookid, refresh) {
+    $('#loading').css({'display': 'inline'});
     $.post('/editor', {
         note: id,
         book: bookid,
@@ -6,6 +7,7 @@ function save_note(id, bookid, refresh) {
         text: $('#summernote').code()
     }).done(function (save_notes) {
         $('#summernote').code(save_notes['text']);
+        $('#loading').css({'display': 'none'});        
         $("#save_btn_span").removeClass('glyphicon glyphicon-floppy-disk').addClass('glyphicon glyphicon-floppy-saved');
         if (save_notes['refresh'] == 'True') {
             location.reload();

@@ -48,7 +48,7 @@ ALLOWED_EXTENSIONS = set(['txt', 'pdf',
                           'odt', 'xls', 
                           'xlsx', 'ppt', 
                           'docx'])
-
+ALLOWED_MIME = set(['image/gif','image/jpg','image/jpeg','image/png'])
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
@@ -100,20 +100,34 @@ def base_fix(doc):
                     filename = filecheck('png')
                     filename2 = 'app/static/img/tmp/' + str(g.user.id) + '-' + str(filename) + '.png'
                     im.save(filename2, 'PNG')
-                    tag['src'] = "/static/img/tmp/"+ str(g.user.id) + '-' + str(filename)+".png"
+                    tag['src'] = "/static/img/tmp/"+ str(g.user.id) + '-' + str(filename) + ".png"
+                elif pic[:14] == 'data:image/gif':
+                    filename = filecheck('fig')
+                    filename2 = 'app/static/img/tmp/' + str(g.user.id) + '-' + str(filename) + '.gif'
+                    im.save(filename2, 'GIF')
+                    tag['src'] = "/static/img/tmp/"+ str(g.user.id) + '-' + str(filename) + ".gif"                    
                 else:
-                    tag['src'] = "/static/img/x.png"                 
+                    tag['src'] = pic[:22]                 
                 fixed = True
             except IOError:
                 pass
         elif pic[:16] != "/static/img/tmp/":
-            filename = filecheck('pic[-3:]')
-            urllib.urlretrieve(pic,'app/static/img/tmp/' + str(g.user.id) + '-' + str(filename) + '.'+pic[-3:])
-            tag['src'] = "/static/img/tmp/"+ str(g.user.id) + '-' + str(filename)+"."+pic[-3:] 
-            fixed = True        
+            check = get_content_type(pic)
+            if check in ALLOWED_MIME:
+                filename = filecheck(check.split('/')[1])
+                urllib.urlretrieve(pic,'app/static/img/tmp/' + str(g.user.id) + '-' + str(filename) + '.' + check.split('/')[1])
+                tag['src'] = "/static/img/tmp/"+ str(g.user.id) + '-' + str(filename)+"." + check.split('/')[1]
+                fixed = True
+            else:
+                tag['src'] = "/static/img/x.gif"
+                fixed = True
     if fixed == True:
         return soup.renderContents().decode('utf8')
     return doc
+
+def get_content_type(url):
+    d = urllib.urlopen(url)
+    return d.info()['Content-Type']
 
 def filecheck(extension):
     filename = randint(2,99999999999999)
@@ -125,7 +139,10 @@ def htmlwork(doc):
     rjs = r'[\s]*(&#x.{1,7})?'.join(list('javascript:'))
     rvb = r'[\s]*(&#x.{1,7})?'.join(list('vbscript:'))
     re_scripts = re.compile('(%s)|(%s)' % (rjs, rvb), re.IGNORECASE)
-    validTags = ['a', 'abbr', 'acronym', 'address', 'area', 'b', 'bdo', 'big', 'blockquote', 'br', 'caption', 'center', 'cite', 'code', 'col', 'colgroup', 'dd', 'del', 'dfn', 'div', 'dl', 'dt', 'em', 'font', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'i', 'img', 'ins', 'kbd', 'li', 'map', 'ol', 'p', 'pre', 'q', 's', 'samp', 'small', 'span', 'strike', 'strong', 'sub', 'sup', 'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'title', 'tr', 'tt', 'u', 'ul', 'var']
+    validTags = ['a', 'abbr', 'acronym', 'address', 'area', 'b', 'bdo', 'big', 'blockquote', 'br', 'caption', 'center', 'cite', 'code', 'col', 'colgroup', 
+                 'dd', 'del', 'dfn', 'div', 'dl', 'dt', 'em', 'font', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'i', 'img', 'ins', 'kbd', 'li', 'map', 'ol', 
+                 'p', 'pre', 'q', 's', 'samp', 'small', 'span', 'strike', 'strong', 'sub', 'sup', 'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'title', 'tr', 
+                 'tt', 'u', 'ul', 'var']
     validAttrs = ['href', 'src', 'width', 'height', 'style', 'WIDTH', 'HEIGHT']
     urlAttrs = 'href src'.split()
     soup = BeautifulSoup.BeautifulSoup(doc)       
@@ -176,6 +193,7 @@ def filecheck_upload(original):
 @login_required
 def upload():
     file = request.files['file']
+    #if file and file.content_type in ALLOWED_MIME:
     if file and allowed_file(file.filename):
         filename = filecheck_upload(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
