@@ -1,0 +1,12 @@
+flask
+flask-login
+flask-openid
+sqlalchemy==0.7.9
+flask-sqlalchemy==0.16
+sqlalchemy-migrate==0.7.2
+flask-whooshalchemy==0.55a
+flask-wtf==0.8.4
+beautifulsoup
+Image
+python-keyczar --pre
+Flask-WeasyPrint

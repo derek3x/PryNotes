@@ -16,34 +16,12 @@ Difference Between the Website and the GitHub Source:
 
 To Setup Locally:
 ========
-Run:
 
-    python virtualenv.py flask
-    
-Then Install:
-    
-    flask/bin/pip install flask
-    flask/bin/pip install flask-login
-    flask/bin/pip install flask-openid
-    flask/bin/pip install sqlalchemy==0.7.9
-    flask/bin/pip install flask-sqlalchemy==0.16
-    flask/bin/pip install sqlalchemy-migrate==0.7.2
-    flask/bin/pip install flask-whooshalchemy==0.55a
-    flask/bin/pip install flask-wtf==0.8.4
-    flask/bin/pip install beautifulsoup
-    flask/bin/pip install Image
-    flask/bin/pip install python-keyczar --pre
-    flask/bin/pip install Flask-WeasyPrint
-    
-Create Encryption Keys:
-    
-    chmod a+x create_keys.py
-    ./create_keys.py
-    
-Create Database:
+Easy Way:
+This will setup a virtual python environment (virtualenv.py) named "flask".  It will then install the needed
+requirements and run scripts to create the database and encryption keys for your own environment.
 
-    chmod a+x db_create.py
-    ./db_create.py
+    python setup.py
 
 To Run:
 
@@ -55,3 +33,28 @@ Browser:
     localhost:5000
     
 *If you have problems installing Flask-WeasyPrint.  This is due to LXML.  A quick google search will show you the extra packages you need to install for your Operating System.  It is different for each O/S.
+
+Scripts:
+=========
+
+Create Encryption Keys (setup script already did this):
+    
+    chmod a+x create_keys.py
+    ./create_keys.py
+    
+Create Database (setup script already did this):
+
+    chmod a+x db_create.py
+    ./db_create.py
+    
+Merge Database:
+
+-Use this if you make any changes to the models.py file
+    chmod a+x db_merge.py
+    ./db_merge.py
+    
+Change Keys (encryption keys):
+
+-Will rotate your keys.  It keeps the old keys for decryption only, and encrypts in new keys.
+    chmod a+x db_merge.py
+    ./change_keys.py    
