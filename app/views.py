@@ -107,7 +107,7 @@ def base_fix(doc):
                     im.save(filename2, 'GIF')
                     tag['src'] = "/static/img/tmp/"+ str(g.user.id) + '-' + str(filename) + ".gif"                    
                 else:
-                    tag['src'] = pic[:22]                 
+                    tag['src'] = "/static/img/x.gif"                 
                 fixed = True
             except IOError:
                 pass
