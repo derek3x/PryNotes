@@ -133,7 +133,7 @@ jQuery('input[id=upload]').change(function () {
                         'display': 'none'
                     });
                 } else {
-                    alert("Not Supported");
+                    alert("Not Supported: " + data['mime']);
                 }
             },
         });

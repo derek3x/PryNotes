@@ -39,16 +39,23 @@ import hashlib
 from flask_weasyprint import HTML, render_pdf
 
 UPLOAD_FOLDER = '/static/uploads'
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 
-                          'png', 'jpg', 
-                          'jpeg', 'gif', 
-                          'zip', 'tar', 
-                          'rar', 'tgz', 
-                          'png', 'doc', 
-                          'odt', 'xls', 
-                          'xlsx', 'ppt', 
-                          'docx'])
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 
+                          'jpeg', 'gif', 'zip', 'tar',
+                          'rar', 'tgz', 'png', 'doc',
+                          'odt', 'xls', 'xlsx', 'ppt', 
+                          'docx', 'ods', 'gz', 'pps',
+                          'ppsx'])
+
 ALLOWED_MIME = set(['image/gif','image/jpg','image/jpeg','image/png'])
+ALLOWED_MIME_UPLOADS = set(['image/gif','image/jpg','image/jpeg','image/png', 'text/plain', 'application/pdf', 'application/x-gtar', 
+                            'application/x-gzip', 'application/x-tar', 'application/gnutar', 'application/msword', 'application/vnd.ms-excel', 
+                            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/powerpoint',
+                            'application/vnd.oasis.opendocument.text', 'application/x-vnd.oasis.opendocument.text', 
+                            'application/vnd.oasis.opendocument.spreadsheet', 'application/x-vnd.oasis.opendocument.spreadsheet',
+                            'application/vnd.openxmlformats-officedocument.presentationml.slideshow','application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                            'application/zip', 'application/x-rar-compressed',
+                            'application/vnd.ms-powerpoint'])
+
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
@@ -193,15 +200,15 @@ def filecheck_upload(original):
 @login_required
 def upload():
     file = request.files['file']
-    #if file and file.content_type in ALLOWED_MIME:
-    if file and allowed_file(file.filename):
+    if file and file.content_type in ALLOWED_MIME_UPLOADS and allowed_file(file.filename):
         filename = filecheck_upload(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         return jsonify({
                     'link': '/uploads/' + filename})
     else:
         return jsonify({
-                    'link': 'None'})
+                    'link': 'None',
+                    'mime': file.content_type})
         
 @app.route('/uploads/<filename>')
 @login_required
