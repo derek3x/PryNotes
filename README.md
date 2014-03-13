@@ -18,6 +18,7 @@ To Setup Locally:
 ========
 
 Easy Way:
+
 This will setup a virtual python environment (virtualenv.py) named "flask".  It will then install the needed
 requirements and run scripts to create the database and encryption keys for your own environment.
 
@@ -50,11 +51,13 @@ Create Database (setup script already did this):
 Merge Database:
 
 -Use this if you make any changes to the models.py file
+
     chmod a+x db_merge.py
     ./db_merge.py
     
 Change Keys (encryption keys):
 
 -Will rotate your keys.  It keeps the old keys for decryption only, and encrypts in new keys.
+
     chmod a+x db_merge.py
     ./change_keys.py    
