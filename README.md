@@ -39,12 +39,12 @@ Browser:
 Helper Scripts:
 =========
 
-Create Encryption Keys (setup script already did this):
+Create Encryption Keys:
     
     chmod a+x create_keys.py
     ./create_keys.py
     
-Create Database (setup script already did this):
+Create Database:
 
     chmod a+x db_create.py
     ./db_create.py
