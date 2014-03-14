@@ -20,10 +20,12 @@ To Setup Locally:
     virtualenv --no-site-packages flask
     source flask/bin/activate
     pip install -r requirements.txt
-    ./create_keys
+    ./create_keys.py
     ./db_create.py
     
 *if helper scripts don't run, make them executable (see Helper Scripts)
+
+*If you have problems installing Flask-WeasyPrint.  This is due to LXML.  A quick google search will show you the extra packages you need to install for your Operating System.  It is different for each O/S. (libxml2-devel, libxslt-devel, python-devel, or python-dev)
     
 To Run:
 
@@ -33,8 +35,6 @@ To Run:
 Browser:
 
     localhost:5000
-    
-*If you have problems installing Flask-WeasyPrint.  This is due to LXML.  A quick google search will show you the extra packages you need to install for your Operating System.  It is different for each O/S.
 
 Helper Scripts:
 =========
