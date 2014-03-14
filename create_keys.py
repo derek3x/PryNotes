@@ -1,4 +1,4 @@
-#!flask/bin/python
+#!/usr/bin/env python2
 import keyczar
 import os
 from keyczar import keyczart

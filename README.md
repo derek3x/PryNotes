@@ -17,13 +17,14 @@ Difference Between the Website and the GitHub Source:
 To Setup Locally:
 ========
 
-Easy Way:
-
-This will setup a virtual python environment (virtualenv.py) named "flask".  It will then install the needed
-requirements and run scripts to create the database and encryption keys for your own environment.
-
-    python setup.py
-
+    virtualenv --no-site-packages flask
+    source flask/bin/activate
+    pip install -r requirements.txt
+    ./create_keys
+    ./db_create.py
+    
+*if helper scripts don't run, make them executable (see Helper Scripts)
+    
 To Run:
 
     chmod a+x run.py
@@ -35,7 +36,7 @@ Browser:
     
 *If you have problems installing Flask-WeasyPrint.  This is due to LXML.  A quick google search will show you the extra packages you need to install for your Operating System.  It is different for each O/S.
 
-Scripts:
+Helper Scripts:
 =========
 
 Create Encryption Keys (setup script already did this):

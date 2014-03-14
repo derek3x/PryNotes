@@ -8,5 +8,5 @@ flask-whooshalchemy==0.55a
 flask-wtf==0.8.4
 beautifulsoup
 Image
-python-keyczar --pre
+python-keyczar==0.71c
 Flask-WeasyPrint

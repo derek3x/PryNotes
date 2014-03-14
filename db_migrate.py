@@ -1,4 +1,4 @@
-#!flask/bin/python
+#!/usr/bin/env python2
 import imp
 from migrate.versioning import api
 from app import db
@@ -13,4 +13,3 @@ open(migration, "wt").write(script)
 api.upgrade(SQLALCHEMY_DATABASE_URI, SQLALCHEMY_MIGRATE_REPO)
 print 'New migration saved as ' + migration
 print 'Current database version: ' + str(api.db_version(SQLALCHEMY_DATABASE_URI, SQLALCHEMY_MIGRATE_REPO))
-
