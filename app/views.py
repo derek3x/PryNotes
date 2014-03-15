@@ -306,6 +306,9 @@ def editor():
                 return jsonify({
                         'text': decrypted,
                         'refresh':request.form['refresh']})
+            else:
+                return redirect(url_for('members'))
+    return redirect(url_for('members'))
 
 #==============================Select a Note=============================#
 @app.route('/select_note', methods = ['POST'])
@@ -327,6 +330,7 @@ def select_note():
                 'text': decrypted,
                 'title' : n.title,
                 'stamps' : time})   
+    return redirect(url_for('members'))
 
 #====================Direct Link Shares (read only)=====================#
 # Create the shares
@@ -431,6 +435,7 @@ def members(page=0, booked=0):
         if notebook_check_out(nbid):
             booked2 = nbid.title
             fcd = nbid.filecabinet
+        return redirect(url_for('members'))
     
     # Populate the list choices        
     form9_move_notebook.fc_select.choices = [(fcg.id, fcg.title) for fcg in fc]
@@ -465,6 +470,8 @@ def members(page=0, booked=0):
                 db.session.add(nb)
                 db.session.commit()
                 return redirect(url_for('members', page = 0, booked = nb.id))
+            return redirect(url_for('members'))
+        return redirect(url_for('members'))
     
     # New notebook
     if form3_new_notebook.validate_on_submit(): 
@@ -509,6 +516,7 @@ def members(page=0, booked=0):
             db.session.commit()
             return redirect(url_for('members', page = nn.id, 
                                     booked = int(nbid)))
+        return redirect(url_for('members'))
     
     # Rename note
     if form4_new_note_title.validate_on_submit():
@@ -526,6 +534,7 @@ def members(page=0, booked=0):
             db.session.commit()
             return redirect(url_for('members', page = n.id, 
                                     booked = n.notebooks_id))
+        return redirect(url_for('members'))
     
     # New file cabinet
     if form7_new_fc.validate_on_submit():
@@ -564,6 +573,7 @@ def members(page=0, booked=0):
             db.session.commit()
             return redirect(url_for('members', page = 0, 
                                     booked = nb.id))
+        return redirect(url_for('members'))
     
     # Rename file cabinet title
     if form6_new_fc_title.validate_on_submit():
@@ -580,7 +590,8 @@ def members(page=0, booked=0):
             nfc.title = fc_title
             db.session.add(nfc)
             db.session.commit()
-            return redirect(url_for('members'))      
+            return redirect(url_for('members'))    
+        return redirect(url_for('members'))
         
     # New notebook in a file cabinet    
     if form8_new_fcnotebook.validate_on_submit(): 
@@ -611,6 +622,7 @@ def members(page=0, booked=0):
             db.session.commit() 
             return redirect(url_for('members', page = nn.id, 
                                     booked = nb.id))  
+        return redirect(url_for('members'))
 
     # Merge two notes    
     if merge.validate_on_submit(): 
@@ -630,7 +642,7 @@ def members(page=0, booked=0):
                 return redirect(url_for('members'))                 
             mergee = decrypt_it(n.body)
             merger = decrypt_it(nn.body)
-            new_note = mergee + merger
+            new_note = mergee.decode('utf8', errors='ignore') + merger.decode('utf8', errors='ignore')
             if len(new_note) <= 524279:
                 n.body = encrypt_it(new_note)
                 db.session.add(n)
@@ -638,6 +650,7 @@ def members(page=0, booked=0):
                 db.session.commit()
                 return redirect(url_for('members', page=n.id, 
                                         booked=n.notebooks_id))
+        return redirect(url_for('members'))
             
     return render_template("members.html",
                             title = 'Members',
