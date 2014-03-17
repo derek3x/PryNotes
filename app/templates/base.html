@@ -80,7 +80,7 @@
             var heights = $( document ).height();
             {% if page %}
             if ({{page}} !=  0){
-                    select_note({{page}}, {{booked}}, '{{booked2}}');
+                    select_note({{page}}, {{booked}}, '{{notebook_title}}');
             }
             {% endif %}
             $('.summernote').summernote({
