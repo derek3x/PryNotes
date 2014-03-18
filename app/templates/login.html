@@ -25,16 +25,16 @@ function set_openid(openid, pr)
                 {{form.hidden_tag()}}
                 <div class="form-group">
                     <label class="col-lg control-label">Click on your OpenID provider below:</label>                
-                <div class="control-group">
+                <div class="list-group">
                     {% for pr in providers %}
-                    <a href="javascript:set_openid('{{pr.url}}', '{{pr.name}}');"><img src="/static/img/{{pr.name.lower()}}.png" class="img-polaroid" style="margin:2px;" /></a>
+                        <li id="{{pr.name}}" class="list-group-item"><a href="javascript:set_openid('{{pr.url}}', '{{pr.name}}');" onclick="$('#arrow').css({'display': 'inline'});$('#{{pr.name}}').attr('class', 'list-group-item list-group-item-info');"><img src="/static/img/{{pr.name.lower()}}.png" class="img-polaroid" style="margin:2px;" /></a></li>
                     {% endfor %}
                 </div>
                 <div class="control-group{% if form.errors.openid %} error{% endif %}">
 
                     <div class="controls">
 
-                    {{ form.openid(type="text", class="form-control", readonly="true") }}                
+                    {{ form.openid(type="text", class="form-control", readonly="true", style="display:none") }}                
                     {% for error in form.errors.openid %}
                         <span class="help-inline">[{{error}}]</span><br>
                     {% endfor %}
@@ -42,14 +42,16 @@ function set_openid(openid, pr)
                 </div>
                 <div class="control-group">
                     <div class="controls">
-                        <label class="checkbox" for="remember_me">
+                        <label class="checkbox pull-right" for="remember_me">
                             {{ form.remember_me }} Remember Me
                         </label>
+                        <br><br>
                     </div>
                 </div>
                 <div class="control-group">
                     <div class="controls">
-                        <input class="btn btn-primary" type="submit" value="Sign In">
+                        <input class="btn btn-primary pull-right" type="submit" value="Sign In"><span id="arrow" style="font-size:250%;display:none" class="glyphicon glyphicon-arrow-right pull-right"></span>
+                        <br><br>
                     </div>
                 </div>          
                 </div>
