@@ -15,6 +15,6 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 Copyright (C) 2014 Derek Lowes (derek3x)
 """
-
 from app import app
+
 app.run(debug = True)

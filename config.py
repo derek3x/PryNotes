@@ -16,6 +16,7 @@ Copyright (C) 2014 Derek Lowes (derek3x)
 """
 
 import os
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db') + '?check_same_thread=False'

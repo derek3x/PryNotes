@@ -16,8 +16,8 @@ Copyright (C) 2014 Derek Lowes (derek3x)
 """
 
 from flask.ext.wtf import Form
-from wtforms import TextField, BooleanField, TextAreaField, SelectField, FileField
-from wtforms.validators import Required, Length
+from wtforms import BooleanField, FileField, SelectField, TextField, TextAreaField
+from wtforms.validators import Required
 
 class LoginForm(Form):
     openid = TextField('openid', validators = [Required()])

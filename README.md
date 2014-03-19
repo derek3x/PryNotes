@@ -20,11 +20,9 @@ To Setup Locally:
     virtualenv --no-site-packages flask
     source flask/bin/activate
     pip install -r requirements.txt
-    ./create_keys.py
-    ./db_create.py
+    python create_keys.py
+    python db_create.py
     
-*if helper scripts don't run, make them executable (see Helper Scripts)
-
 *If you have problems installing Flask-WeasyPrint.  This is due to LXML.  A quick google search will show you the extra packages you need to install for your Operating System.  It is different for each O/S. (libxml2-devel, libxslt-devel, python-devel, or python-dev)
     
 To Run:
@@ -41,24 +39,20 @@ Helper Scripts:
 
 Create Encryption Keys:
     
-    chmod a+x create_keys.py
-    ./create_keys.py
+    python create_keys.py
     
 Create Database:
 
-    chmod a+x db_create.py
-    ./db_create.py
+    python db_create.py
     
 Merge Database:
 
 -Use this if you make any changes to the models.py file
 
-    chmod a+x db_merge.py
-    ./db_merge.py
+    python db_merge.py
     
 Change Keys (encryption keys):
 
 -Will rotate your keys.  It keeps the old keys for decryption only, and encrypts in new keys.
 
-    chmod a+x db_merge.py
-    ./change_keys.py    
+    python change_keys.py    

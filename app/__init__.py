@@ -14,12 +14,13 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 Copyright (C) 2014 Derek Lowes (derek3x)
 """
+import os
 
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
-import os
 from flask.ext.login import LoginManager
 from flask.ext.openid import OpenID
+
 from config import basedir
 from momentjs import momentjs
 

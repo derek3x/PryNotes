@@ -6,6 +6,8 @@ You can do this as many times as you want.  It is all automatic.
 """
 import keyczar
 import os
+
 from keyczar import keyczart
+
 newpath = r'tmp/kz' 
 keyczart.main(['addkey','--location=tmp/kz/' ,'--status=primary'])

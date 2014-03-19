@@ -15,80 +15,104 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 Copyright (C) 2014 Derek Lowes (derek3x)
 """
 
-from flask import render_template, flash, redirect, session, url_for, request, g, request, send_from_directory
-from flask.ext.login import login_user, logout_user, current_user, login_required
-from app import app, db, lm, oid
-from forms import LoginForm, EditForm, Note_Form, Note_Title, New_Notebook, Rename_Note, Rename_Notebook, Rename_FileCabinet, New_FileCabinet, New_FCNotebook, Move_Notebook, Attach, Merge
-from models import User, ROLE_USER, ROLE_ADMIN, Notes, Notebooks, Filecabinets
-from datetime import datetime
-from flask.ext.sqlalchemy import get_debug_queries
-from config import DATABASE_QUERY_TIMEOUT
-import re
 import os
-import urllib
-from random import randint
-import BeautifulSoup
-from BeautifulSoup import Comment
-from HTMLParser import HTMLParser
-from PIL import Image
+import re
+
 import base64
-from io import BytesIO
-from keyczar import keyczar
-from flask import jsonify
+import BeautifulSoup
 import hashlib
+import urllib
+
+from BeautifulSoup import Comment
+from datetime import datetime
+from io import BytesIO
+from HTMLParser import HTMLParser
+from keyczar import keyczar
+from PIL import Image
+from random import randint
+
+from flask import jsonify
+from flask import flash, g, render_template, redirect, request
+from flask import send_from_directory, session, url_for
+from flask.ext.login import current_user, login_user
+from flask.ext.login import logout_user, login_required
+from flask.ext.sqlalchemy import get_debug_queries
 from flask_weasyprint import HTML, render_pdf
 
+from app import app, db, lm, oid
+from forms import Attach, EditForm, LoginForm, Merge, Move_Notebook
+from forms import New_FCNotebook, New_FileCabinet, New_Notebook
+from forms import Note_Form, Note_Title, Rename_FileCabinet
+from forms import Rename_Note, Rename_Notebook
+from models import Filecabinets, Notes, Notebooks, ROLE_ADMIN, ROLE_USER, User
+from config import DATABASE_QUERY_TIMEOUT
+
+#=================Constants=========================#
 UPLOAD_FOLDER = '/static/uploads'
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg',
                           'jpeg', 'gif', 'zip', 'tar',
                           'rar', 'tgz', 'png', 'doc',
-                          'odt', 'xls', 'xlsx', 'ppt', 
+                          'odt', 'xls', 'xlsx', 'ppt',
                           'docx', 'ods', 'gz', 'pps',
                           'ppsx'])
 
-ALLOWED_MIME = set(['image/gif','image/jpg','image/jpeg','image/png'])
-ALLOWED_MIME_UPLOADS = set(['image/gif','image/jpg','image/jpeg','image/png', 'text/plain', 'application/pdf', 'application/x-gtar', 
-                            'application/x-gzip', 'application/x-tar', 'application/gnutar', 'application/msword', 'application/vnd.ms-excel', 
-                            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/powerpoint',
-                            'application/vnd.oasis.opendocument.text', 'application/x-vnd.oasis.opendocument.text', 
-                            'application/vnd.oasis.opendocument.spreadsheet', 'application/x-vnd.oasis.opendocument.spreadsheet',
-                            'application/vnd.openxmlformats-officedocument.presentationml.slideshow','application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+ALLOWED_MIME = set(['image/gif', 'image/jpg', 'image/jpeg', 'image/png'])
+ALLOWED_MIME_UPLOADS = set(['image/gif', 'image/jpg', 'image/jpeg', 'image/png',
+                            'text/plain', 'application/pdf',
+                            'application/x-gtar',
+                            'application/x-gzip', 'application/x-tar',
+                            'application/gnutar', 'application/msword',
+                            'application/vnd.ms-excel',
+                            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                            'application/powerpoint', 'application/vnd.oasis.opendocument.text',
+                            'application/x-vnd.oasis.opendocument.text',
+                            'application/vnd.oasis.opendocument.spreadsheet',
+                            'application/x-vnd.oasis.opendocument.spreadsheet',
+                            'application/vnd.openxmlformats-officedocument.presentationml.slideshow',
+                            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                             'application/zip', 'application/x-rar-compressed',
                             'application/vnd.ms-powerpoint'])
 
+
+#=======================Favicon=================================#
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
+
 #========================Save to PDF=============================#
 @app.route('/<note_title>_<note_id>.pdf')
 @login_required
-def makePDF(note_title,note_id):
-    ids = re.search('[0-9]+',note_id)
-    if ids == None:
+def makePDF(note_title, note_id):
+    ids = re.search('[0-9]+', note_id)
+    if ids is None:
         flash('Note not found.  If you think this is in error, please contact us.', 'danger')
-        return redirect(url_for('members'))            
+        return redirect(url_for('members'))
     n = Notes.query.get(int(ids.group(0)))
     if note_check_out(n):
         html = decrypt_it(n.body).decode('utf8', errors='ignore')
         return render_pdf(HTML(string=html))
     else:
-        return redirect(url_for('members'))          
-    
+        return redirect(url_for('members'))
+
+
 #========================HTML Stripers and Fixers=============================#
 """
-Strips the html down if it has characteristics of a copy and paste from a website.  
-If it does not then it will simply pass the text back.  This fixes the bug where 
+Strips the html down if it has characteristics of a copy and paste from a website.
+If it does not then it will simply pass the text back.  This fixes the bug where
 BeautifulSoup will strip out the text put into the editor by the user.  The textarea
 does not put <p> tags on the text.  It also fixes the duplication issue on tables.
 """
+
+
 def nohtml(doc):
     s = MLStripper()
     s.feed(doc)
     return s.get_data()
 
-def base_fix(doc): 
+
+def base_fix(doc):
     fixed = False
     regexp = re.compile(r'(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$')
     soup = BeautifulSoup.BeautifulSoup(doc)
@@ -102,19 +126,19 @@ def base_fix(doc):
                     filename = filecheck('jpg')
                     filename2 = 'app/static/img/tmp/' + str(g.user.id) + '-' + str(filename) + '.jpg'
                     im.save(filename2, 'JPEG')
-                    tag['src'] = "/static/img/tmp/"+ str(g.user.id) + '-' + str(filename)+".jpg"                 
+                    tag['src'] = "/static/img/tmp/" + str(g.user.id) + '-' + str(filename)+".jpg"
                 elif pic[:14] == 'data:image/png':
                     filename = filecheck('png')
                     filename2 = 'app/static/img/tmp/' + str(g.user.id) + '-' + str(filename) + '.png'
                     im.save(filename2, 'PNG')
-                    tag['src'] = "/static/img/tmp/"+ str(g.user.id) + '-' + str(filename) + ".png"
+                    tag['src'] = "/static/img/tmp/" + str(g.user.id) + '-' + str(filename) + ".png"
                 elif pic[:14] == 'data:image/gif':
                     filename = filecheck('fig')
                     filename2 = 'app/static/img/tmp/' + str(g.user.id) + '-' + str(filename) + '.gif'
                     im.save(filename2, 'GIF')
-                    tag['src'] = "/static/img/tmp/"+ str(g.user.id) + '-' + str(filename) + ".gif"                    
+                    tag['src'] = "/static/img/tmp/" + str(g.user.id) + '-' + str(filename) + ".gif"
                 else:
-                    tag['src'] = "/static/img/x.gif"                 
+                    tag['src'] = "/static/img/x.gif"
                 fixed = True
             except IOError:
                 pass
@@ -122,43 +146,49 @@ def base_fix(doc):
             check = get_content_type(pic)
             if check in ALLOWED_MIME:
                 filename = filecheck(check.split('/')[1])
-                urllib.urlretrieve(pic,'app/static/img/tmp/' + str(g.user.id) + '-' + str(filename) + '.' + check.split('/')[1])
-                tag['src'] = "/static/img/tmp/"+ str(g.user.id) + '-' + str(filename)+"." + check.split('/')[1]
+                urllib.urlretrieve(pic, 'app/static/img/tmp/' + str(g.user.id) + '-' + str(filename) + '.' + check.split('/')[1])
+                tag['src'] = "/static/img/tmp/" + str(g.user.id) + '-' + str(filename)+"." + check.split('/')[1]
                 fixed = True
             else:
                 tag['src'] = "/static/img/x.gif"
                 fixed = True
-    if fixed == True:
+    if fixed is True:
         return soup.renderContents().decode('utf8')
     return doc
+
 
 def get_content_type(url):
     d = urllib.urlopen(url)
     return d.info()['Content-Type']
 
+
 def filecheck(extension):
-    filename = randint(2,99999999999999)
-    if os.path.isfile('app/static/tmp/'+ str(g.user.id) + '-' + str(filename)+'.'+str(extension)):
+    filename = randint(2, 99999999999999)
+    if os.path.isfile('app/static/tmp/' + str(g.user.id) + '-' + str(filename) + '.' + str(extension)):
         return filecheck(extension)
     return filename
-        
+
+
 def htmlwork(doc):
     rjs = r'[\s]*(&#x.{1,7})?'.join(list('javascript:'))
     rvb = r'[\s]*(&#x.{1,7})?'.join(list('vbscript:'))
     re_scripts = re.compile('(%s)|(%s)' % (rjs, rvb), re.IGNORECASE)
-    validTags = ['a', 'abbr', 'acronym', 'address', 'area', 'b', 'bdo', 'big', 'blockquote', 'br', 'caption', 'center', 'cite', 'code', 'col', 'colgroup', 
-                 'dd', 'del', 'dfn', 'div', 'dl', 'dt', 'em', 'font', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'i', 'img', 'ins', 'kbd', 'li', 'map', 'ol', 
-                 'p', 'pre', 'q', 's', 'samp', 'small', 'span', 'strike', 'strong', 'sub', 'sup', 'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'title', 'tr', 
-                 'tt', 'u', 'ul', 'var']
+    validTags = ['a', 'abbr', 'acronym', 'address', 'area', 'b', 'bdo', 'big',
+                 'blockquote', 'br', 'caption', 'center', 'cite', 'code', 'col',
+                 'colgroup', 'dd', 'del', 'dfn', 'div', 'dl', 'dt', 'em', 'font',
+                 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'i', 'img', 'ins',
+                 'kbd', 'li', 'map', 'ol', 'p', 'pre', 'q', 's', 'samp', 'small',
+                 'span', 'strike', 'strong', 'sub', 'sup', 'table', 'tbody', 'td',
+                 'tfoot', 'th', 'thead', 'title', 'tr', 'tt', 'u', 'ul', 'var']
     validAttrs = ['href', 'src', 'width', 'height', 'style', 'WIDTH', 'HEIGHT']
     urlAttrs = 'href src'.split()
-    soup = BeautifulSoup.BeautifulSoup(doc)       
+    soup = BeautifulSoup.BeautifulSoup(doc)
     for comment in soup.findAll(text=lambda text: isinstance(text, Comment)):
         # Get rid of comments (ironic comment)
-        comment.extract()     
+        comment.extract()
     for tag in soup.findAll(True):
         if tag.name not in validTags:
-            tag.hidden = True            
+            tag.hidden = True
     for tag in soup.findAll(True):
         if tag.name not in validTags:
             tag.hidden = True
@@ -166,35 +196,42 @@ def htmlwork(doc):
         tag.attrs = []
         for attr, val in attrs:
             if attr in validAttrs:
-                val = re_scripts.sub('', val) # Remove scripts (vbs & js)
+                val = re_scripts.sub('', val)  # Remove scripts (vbs & js)
                 tag.attrs.append((attr, val))
-    return soup.renderContents().decode('utf8')                
+    return soup.renderContents().decode('utf8')
+
 
 def strip_extras(doc):
     #doc_stripped = re.sub('[%s]' % ''.join("'"), "\\'", doc) #Escape ' as it will break everything if you don't - Fixed (kept for reference)
-    doc_stripped = "".join( doc.splitlines()) # Fixes the end of line issue in the editor on copy and paste from website.  
+    doc_stripped = "".join(doc.splitlines())  # Fixes the end of line issue in the editor on copy and paste from website.
     return doc_stripped
+
 
 class MLStripper(HTMLParser):
     def __init__(self):
         self.reset()
         self.fed = []
+
     def handle_data(self, d):
         self.fed.append(d)
-    def get_data(self):              
+
+    def get_data(self):
         return ''.join(self.fed)
-    
+
+
 #========================Uploads=============================#
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
+
 def filecheck_upload(original):
-    filename = randint(2,99999999999999)
+    filename = randint(2, 99999999999999)
     extension = original.rsplit('.', 1)[1]
     if os.path.isfile('app/static/uploads/'+str(filename)+'.'+str(extension)):
         return filecheck(original)
     return str(g.user.id) + '-' + str(filename) + '.' + str(extension)
+
 
 @app.route('/upload', methods=['POST'])
 @login_required
@@ -204,30 +241,34 @@ def upload():
         filename = filecheck_upload(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         return jsonify({
-                    'link': '/uploads/' + filename})
+            'link': '/uploads/' + filename})
     else:
         return jsonify({
-                    'link': 'None',
-                    'mime': file.content_type})
-        
+            'link': 'None',
+            'mime': file.content_type})
+
+
 @app.route('/uploads/<filename>')
 @login_required
 def uploaded_file(filename):
-    if filename.rsplit('-',1)[0] == str(g.user.id):
+    if filename.rsplit('-', 1)[0] == str(g.user.id):
         return send_from_directory(app.config['UPLOAD_FOLDER'],
                                 filename)
     else:
         return send_from_directory(app.config['UPLOAD_FOLDER'],
-                                '~Data.txt') #fake file for the bots
-        
+                                '~Data.txt')  #fake file for the bots
+
+
 @app.route('/static/uploads/<filename>')
 @login_required
 def security(filename):
     #This is setup as a warning to people trying to randomly hit others data.
     logout_user()
     return render_template("index.html",
-        title = 'Home')    
-#==============================Encrypt/Decrypt=============================#    
+        title = 'Home')
+
+
+#==============================Encrypt/Decrypt=============================#
 def encrypt_it(s):
     s = s.encode('utf8', errors='ignore')
     location = 'tmp/kz'
@@ -240,6 +281,8 @@ def decrypt_it(s):
     crypter = keyczar.Crypter.Read(location)
     s_decrypted = crypter.Decrypt(s)
     return s_decrypted
+
+
 #==============================Landing=============================#
 @app.route('/')
 @app.route('/index')
@@ -255,34 +298,40 @@ def static_from_root():
 @app.route('/old_browser')
 def old_browser():
     return app.send_static_file('old_browser.html')
+
+
 #================================Help===============================#
 @app.route('/help')
 def helps():
     return render_template("help.html",
         title = 'Help - PryNotes')
+
+
 #================================Learn More===============================#    
 @app.route('/learnmore')
 def learnmore():
     return render_template("learnmore.html",
         title = 'PryNotes - Learn PryNotes')
+
+
 #================================First Run===============================#    
 @app.route('/first_run')
 @login_required
 def first_run():
     return render_template("first_run.html",
-        title = 'Welcome to PryNotes')    
-    
+        title = 'Welcome to PryNotes')
+
+
 #==============================Editor Save=============================#
 @app.route('/editor', methods = ['POST'])
 @login_required
 def editor():
-    user = g.user
     ids = re.search('[0-9]+',request.form['note'])
     if ids == None:
         flash('Note not found.  If you think this is in error, please contact us.', 'danger')
-        return redirect(url_for('members'))            
+        return redirect(url_for('members'))
     n = Notes.query.get(int(ids.group(0)))
-    if note_check_out(n): 
+    if note_check_out(n):
         if len(request.form['text']) > 524279:
             flash('That note seems kinda big.  Can we make it smaller?', 'danger')
             return redirect(url_for('members'))
@@ -305,16 +354,16 @@ def editor():
                 decrypted = decrypt_it(n.body)
                 return jsonify({
                         'text': decrypted,
-                        'refresh':request.form['refresh']})
+                        'refresh': request.form['refresh']})
             else:
                 return redirect(url_for('members'))
     return redirect(url_for('members'))
+
 
 #==============================Select a Note=============================#
 @app.route('/select_note', methods = ['POST'])
 @login_required
 def select_note():       
-    user = g.user
     note_id = re.search('[0-9]+',request.form['note_id'])
     if note_id == None:
         flash('Note not found.  If you think this is in error, please contact us.', 'danger')
@@ -328,9 +377,10 @@ def select_note():
         time = str(n.timestamp)
         return jsonify({
                 'text': decrypted,
-                'title' : n.title,
-                'stamps' : time})   
+                'title': n.title,
+                'stamps': time})
     return redirect(url_for('members'))
+
 
 #====================Direct Link Shares (read only)=====================#
 # Create the shares
@@ -349,6 +399,7 @@ def create_share(note_id):
         flash('www.prynotes.com/shared_note/' + str(link), 'info')
         return redirect(url_for('members'))
     return redirect(url_for('members'))
+
 
 # Read the shares    
 @app.route('/shared_note/<link>')
@@ -371,6 +422,7 @@ def shared_note(link):
                                 )
     flash('There has been an error.  Sorry, we will look into the problem','danger')
     return redirect(url_for('index'))
+
 
 # Save a shared note to account
 @app.route('/save_shared/<link>')
@@ -403,6 +455,7 @@ def save_shared(link):
         return redirect(url_for('members'))
     flash('There has been an error.  Sorry, we will look into the problem','danger')
     return redirect(url_for('index'))    
+
         
 #==============================Members=============================#    
 @app.route('/members', methods = ['GET', 'POST'])
