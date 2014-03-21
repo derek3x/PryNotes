@@ -32,8 +32,8 @@ from PIL import Image
 from random import randint
 
 from flask import jsonify
-from flask import flash, g, render_template, redirect, request
-from flask import send_from_directory, session, url_for
+from flask import flash, g, make_response, render_template, redirect
+from flask import request, send_from_directory, session, url_for
 from flask.ext.login import current_user, login_user
 from flask.ext.login import logout_user, login_required
 from flask.ext.sqlalchemy import get_debug_queries
@@ -85,13 +85,24 @@ ALLOWED_MIME_UPLOADS = set(['image/gif',
 
 #=======================Favicon=================================#
 @app.route('/favicon.ico')
-def favicon():
-    return send_from_directory(
-        os.path.join(
+@app.route('/favicon/<image>')
+def favicon(image):
+    if image:
+        return send_from_directory(
+            os.path.join(app.root_path, 'static'), image)
+    return send_from_directory(os.path.join(
             app.root_path,
             'static'),
         'favicon.ico',
         mimetype='image/vnd.microsoft.icon')
+
+
+#=======================Webapp=================================#
+@app.route('/manifest.webapp')
+def manifest_webapp():
+    res = make_response(render_template('manifest.webapp'), 200)
+    res.headers["Content-Type"] = "application/x-web-app-manifest+json"
+    return res
 
 
 #========================Save to PDF=============================#

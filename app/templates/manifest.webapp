@@ -1,0 +1,19 @@
+{
+  "name": "PryNotes",
+  "description": "Web based note application (open sourced). Save your ideas, notes, todo lists, recipes, news articles or anything you find online. Keep it safe and secure with encryption and in a database that won't be mined or sold.",
+  "launch_path": "/index.html",
+  "icons": {
+    "16": "/favicon.ico",
+    "32": "/favicon/32x32.jpeg",
+    "60": "/favicon/60x60.jpeg",
+    "90": "/favicon/90x90.jpeg",
+    "120": "/favicon/120x120.jpeg",
+    "128": "/favicon/128x128.jpeg"
+  },
+  "developer": {
+    "name": "Derek Lowes",
+    "url": "https://github.com/derek3x/PryNotes"
+  },
+  "default_locale": "en"
+}
+  
