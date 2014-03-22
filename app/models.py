@@ -29,7 +29,7 @@ class User(db.Model):
     notebooks = db.relationship('Notebooks', backref = 'notebook', lazy = 'dynamic')
     notes = db.relationship('Notes', backref = 'note', lazy = 'dynamic')
     last_seen = db.Column(db.DateTime)
-    
+
     def is_authenticated(self):
         return True
 
@@ -41,7 +41,7 @@ class User(db.Model):
 
     def get_id(self):
         return unicode(self.id)
-    
+
     def get_books(self):
         u = User.query.get(self.id)
         fc = sorted(u.filecabinets.all(), key=lambda FileCabinets: FileCabinets.title)
@@ -72,18 +72,18 @@ class Notebooks(db.Model):
     def __repr__(self):
         return '<NoteBooks %r>' % (self.title)   
 
-class Notes(db.Model):    
+class Notes(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     title = db.Column(db.String(80))
     body = db.Column(db.String(524280))
     timestamp = db.Column(db.DateTime)
     notebooks_id = db.Column(db.Integer, db.ForeignKey('notebooks.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    
+    passphrased = db.Column(db.Integer)
+
     def get_note(self, ids):
         n = Notes.query.get(ids)
         return n
 
     def __repr__(self):
         return '<Notes %r>' % (self.body)
-    

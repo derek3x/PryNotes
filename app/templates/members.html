@@ -63,7 +63,11 @@
                                         {% for note in notes %}
                                         {% if note.notebooks_id == book.id %} 
                                         <div class="dropdown">
-                                            <a role="button" id="{{note.id}}" href="javascript:select_note('{{note.id}}', '{{book.id}}', '{{book.title}}');" class="list-group-item-text" style="color:#555555"><span class="glyphicon glyphicon-file"></span>{{note.title}}</a>
+                                            {% if note.passphrased != None %}
+                                                <a role="button" id="{{note.id}}" href="javascript:select_note('{{note.id}}', '{{book.id}}', '{{book.title}}', 'True');" class="list-group-item-text" style="color:#555555"><span class="glyphicon glyphicon-file"></span>{{note.title}}</a>
+                                            {% else %}
+                                                <a role="button" id="{{note.id}}" href="javascript:select_note('{{note.id}}', '{{book.id}}', '{{book.title}}', 'False');" class="list-group-item-text" style="color:#555555"><span class="glyphicon glyphicon-file"></span>{{note.title}}</a>
+                                            {% endif %}
                                             <a class="dropdown-toggle" data-toggle="dropdown">
                                             <span class="caret"></span>
                                             <span class="sr-only">Toggle Dropdown</span>
@@ -117,7 +121,11 @@
                                 {% for note in notes %}
                                 {% if note.notebooks_id == book.id %}
                                 <div class="dropdown">
-                                    <a role="button" id="{{note.id}}" href="javascript:select_note('{{note.id}}', '{{book.id}}', '{{book.title}}');" class="list-group-item-text" style="color:#555555"><span class="glyphicon glyphicon-file"></span>{{note.title}}</a>
+                                    {% if note.passphrased%}
+                                        <a role="button" id="{{note.id}}" href="javascript:select_note('{{note.id}}', '{{book.id}}', '{{book.title}}', 'True');" class="list-group-item-text" style="color:#555555"><span class="glyphicon glyphicon-file"></span>{{note.title}}</a>
+                                    {% else %}
+                                        <a role="button" id="{{note.id}}" href="javascript:select_note('{{note.id}}', '{{book.id}}', '{{book.title}}', 'False');" class="list-group-item-text" style="color:#555555"><span class="glyphicon glyphicon-file"></span>{{note.title}}</a>
+                                    {% endif %}
                                     <a class="dropdown-toggle" data-toggle="dropdown">
                                     <span class="caret"></span>
                                     <span class="sr-only">Toggle Dropdown</span>
@@ -126,6 +134,7 @@
                                         <li><a href="#" data-toggle="modal" onclick="caret_click('{{note.id}}','{{note.title}}')" data-target=".bs-modal-sm">Rename</a></li>
                                         <li><a href="{{ url_for('delete', ids = note.id) }}" class="confirm">Delete</a></li>
                                         <li><a href="#" data-toggle="modal" onclick="caret_merge('{{note.id}}')" data-target=".bs-modal-smerge">Merge Note</a></li>
+                                        <li><a href="#" data-toggle="modal" onclick="caret_encrypt('{{note.id}}')">Password Encrypt</a></li>
                                     </ul>
                                 </div>
                                 {% endif %}

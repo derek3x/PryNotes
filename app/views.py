@@ -24,6 +24,7 @@ import hashlib
 import urllib
 
 from BeautifulSoup import Comment
+from Crypto.Cipher import AES
 from datetime import datetime
 from io import BytesIO
 from HTMLParser import HTMLParser
@@ -81,6 +82,11 @@ ALLOWED_MIME_UPLOADS = set(['image/gif',
                             'application/zip',
                             'application/x-rar-compressed',
                             'application/vnd.ms-powerpoint'])
+SALT_LENGTH = 32
+DERIVATION_ROUNDS=1000
+BLOCK_SIZE = 16
+KEY_SIZE = 32
+MODE = AES.MODE_CBC
 
 
 #=======================Favicon=================================#
@@ -117,6 +123,11 @@ def makePDF(note_title, note_id):
         return redirect(url_for('members'))
     n = Notes.query.get(int(ids.group(0)))
     if note_check_out(n):
+        if n.passphrased:
+            flash(
+                'Password encrypted notes are not supported yet.',
+                'danger')
+            return redirect(url_for('members'))            
         html = decrypt_it(n.body).decode('utf8', errors='ignore')
         return render_pdf(HTML(string=html))
     else:
@@ -323,6 +334,47 @@ def decrypt_it(s):
     s_decrypted = crypter.Decrypt(s)
     return s_decrypted
 
+def secret_encrypt(phrase, text, base64=False):
+    try:
+        text = text.encode('utf8', errors='ignore')
+    except:
+        pass
+    salt = os.urandom(SALT_LENGTH)
+    iv = os.urandom(BLOCK_SIZE)
+     
+    paddingLength = 16 - (len(text) % 16)
+    paddedPlaintext = text+chr(paddingLength)*paddingLength
+    derivedKey = phrase.encode('utf8', errors='ignore')
+    for i in range(0,DERIVATION_ROUNDS):
+        derivedKey = hashlib.sha256(derivedKey+salt).digest()
+    derivedKey = derivedKey[:KEY_SIZE]
+    cipherSpec = AES.new(derivedKey, MODE, iv)
+    ciphertext = cipherSpec.encrypt(paddedPlaintext)
+    ciphertext = ciphertext + iv + salt
+    if base64:
+        return base64.b64encode(ciphertext)
+    else:
+        return encrypt_it(ciphertext.encode("hex"))
+
+def secret_decrypt(phrase, text, base64=False):    
+    text = decrypt_it(text.encode('utf8', errors='ignore'))
+    if base64:
+        decodedCiphertext = base64.b64decode(text)
+    else:
+        decodedCiphertext = text.decode("hex")
+    startIv = len(decodedCiphertext)-BLOCK_SIZE-SALT_LENGTH
+    startSalt = len(decodedCiphertext)-SALT_LENGTH
+    data, iv, salt = decodedCiphertext[:startIv], decodedCiphertext[startIv:startSalt], decodedCiphertext[startSalt:]
+    derivedKey = phrase.encode('utf8', errors='ignore')
+    for i in range(0, DERIVATION_ROUNDS):
+        derivedKey = hashlib.sha256(derivedKey+salt).digest()
+    derivedKey = derivedKey[:KEY_SIZE]
+    cipherSpec = AES.new(derivedKey, MODE, iv)
+    plaintextWithPadding = cipherSpec.decrypt(data)
+    paddingLength = ord(plaintextWithPadding[-1])
+    plaintext = plaintextWithPadding[:-paddingLength]
+    return plaintext
+
 
 #==============================Landing=============================#
 @app.route('/')
@@ -386,7 +438,11 @@ def editor():
             doc = htmlwork(request.form['text'])
             doc_stripped = strip_extras(doc)
             base = base_fix(doc_stripped)
-            encrypted = encrypt_it(base)
+            if n.passphrased:
+                encrypted = secret_encrypt(request.form['phrase'], base)
+                n.passphrased = 1
+            else:
+                encrypted = encrypt_it(base)
             n.body = encrypted
             n.timestamp = datetime.utcnow()
             nbid = request.form['book']
@@ -400,7 +456,10 @@ def editor():
                 n.notes_link = nb
                 db.session.add(n)
                 db.session.commit()
-                decrypted = decrypt_it(n.body)
+                if n.passphrased:
+                    decrypted = secret_decrypt(request.form['phrase'], n.body)
+                else:
+                    decrypted = decrypt_it(n.body)
                 return jsonify({
                     'text': decrypted,
                     'refresh': request.form['refresh']})
@@ -422,7 +481,10 @@ def select_note():
     n = Notes.query.get(int(note_id.group(0)))
     if note_check_out(n):
         if len(n.body) > 2:
-            decrypted = decrypt_it(n.body)
+            if n.passphrased:
+                decrypted = secret_decrypt(request.form['phrase'], n.body)
+            else:
+                decrypted = decrypt_it(n.body)
         else:
             decrypted = n.body
         time = str(n.timestamp)
@@ -432,6 +494,39 @@ def select_note():
             'stamps': time})
     return redirect(url_for('members'))
 
+
+#============================Secret Notes============================#
+@app.route('/secret_notes/<int:note_id>', methods=['GET', 'POST'])
+@login_required
+def secret_notes(note_id):
+    if note_id is None:
+        flash(
+            'Note not found.  If you think this is in error, please contact us.',
+            'danger')
+        return redirect(url_for('members'))
+    n = Notes.query.get(note_id)
+    if note_check_out(n):
+        if n.passphrased:
+            flash(
+            'This note is already passphrased.  You can not change the passphrase',
+            'danger')
+            return redirect(url_for('members'))
+        phrase = request.form['phrase']
+        if len(n.body) < 2:
+            flash(
+            'This note is too short.  Please make it longer to encrypt it',
+            'danger')
+            return redirect(url_for('members'))            
+        text = decrypt_it(n.body)
+        secret = secret_encrypt(phrase, text)
+        n.body = secret
+        n.passphrased = 1
+        db.session.add(n)
+        db.session.commit()
+        nb = Notebooks.query.get(n.notebooks_id)
+        return redirect(url_for('members'))
+    return redirect(url_for('members'))
+        
 
 #====================Direct Link Shares (read only)=====================#
 # Create the shares
@@ -444,6 +539,11 @@ def create_share(note_id):
             'danger')
         return redirect(url_for('members'))
     n = Notes.query.get(note_id)
+    if n.passphrased:
+        flash(
+            'Sorry this note is password encrypted.  We do not support sharing these yet.',
+            'danger')
+        return redirect(url_for('members'))        
     if note_check_out(n):
         key = str(n.id) + str(g.user.id)
         link = hashlib.sha224(str(n.title) + "," + key).hexdigest()
@@ -467,6 +567,11 @@ def shared_note(link):
     n = Notes.query.get(note_id)
     key = str(n.id) + str(n.user_id)
     if link.split('-')[0] == hashlib.sha224(str(n.title) + "," + key).hexdigest():
+        if n.passphrased:
+            flash(
+                'Sorry this note is password encrypted.  We do not support sharing these yet.',
+                'danger')
+            return redirect(url_for('index'))           
         note_body = decrypt_it(n.body)
         return render_template(
             "shared_notes.html",
@@ -543,6 +648,12 @@ def members(page=0, booked=0):
     notebook_title = ""  # notebook title
     fcd = 0
     note_counter = {}
+    
+    # Pass if this note is passphrased or not
+    if page > 0:
+        page_note = Notes.query.get(page).passphrased
+    else:
+        page_note = ""
 
     # Make sure the notebook is theirs
     if booked > 0:
@@ -773,7 +884,13 @@ def members(page=0, booked=0):
         if int(mergee_id.group(0)) == int(merger_id):
             flash('You can not merge a Note into itself', 'danger')
             return redirect(url_for('members'))
+        if n.passphrased:
+            flash('You can not merge a passphrased note', 'danger')
+            return redirect(url_for('members'))            
         nn = Notes.query.get(int(merger_id))
+        if nn.passphrased:
+            flash('You can not merge a passphrased note', 'danger')
+            return redirect(url_for('members'))          
         if note_check_out(n) and note_check_out(nn):
             if len(n.body) < 2 or len(nn.body) < 2:
                 flash('You can not merge an empty note', 'danger')
@@ -809,6 +926,7 @@ def members(page=0, booked=0):
                            fc=fc,
                            fcd=fcd,
                            page=page,  # reload with right note selected
+                           page_passphrased=page_note,
                            attach=attach,
                            booked=booked,  # reload with right notebook selected
                            notebook_title=notebook_title,

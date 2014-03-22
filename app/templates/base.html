@@ -2,10 +2,10 @@
 <html>
 <head>
     <!--[if lte IE 8]><meta http-equiv="refresh" content="0;url={{url_for('old_browser')}}" /><![endif]-->
-    <link href="/static/css/summernote.css" rel="stylesheet" media="screen">
+    <link href="{{ url_for('.static', filename = 'css/summernote.css') }}" rel="stylesheet" media="screen">
     <link href="{{ url_for('.static', filename = 'css/bootstrap.min.css') }}" rel="stylesheet" media="screen">
-    <link href="/static/css/font-awesome.min.css" rel="stylesheet" media="screen">
-    <link href="/static/css/carousel.css" rel="stylesheet">
+    <link href="{{ url_for('.static', filename = 'css/font-awesome.min.css') }}" rel="stylesheet" media="screen">
+    <link href="{{ url_for('.static', filename = 'css/carousel.css') }}" rel="stylesheet">
     <style>
         .note-editor { width: auto !important;  }
         .note-editor.fullscreen { width: 100% !important; }        
@@ -80,7 +80,7 @@
             var heights = $( document ).height();
             {% if page %}
             if ({{page}} !=  0){
-                    select_note({{page}}, {{booked}}, '{{notebook_title}}');
+                    select_note({{page}}, {{booked}}, '{{notebook_title}}', '{% if page_passphrased == 1 %}True{%else%}False{%endif%}');
             }
             {% endif %}
             $('.summernote').summernote({

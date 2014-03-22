@@ -1,9 +1,14 @@
-function save_note(id, bookid, refresh) {
+function save_note(id, bookid, refresh, secret) {
+    var phrase;
+    if (secret == 'True') {
+        phrase=prompt("Please enter a secret key.  We can not retrieve this, so type carefully.  You can change your secret key now if you want to");              
+    }    
     $('#loading').css({'display': 'inline'});
     $.post('/editor', {
         note: id,
         book: bookid,
         refresh: refresh,
+        phrase: phrase,
         text: $('#summernote').code()
     }).done(function (save_notes) {
         $('#summernote').code(save_notes['text']);
@@ -16,15 +21,20 @@ function save_note(id, bookid, refresh) {
     });
 }
 
-function select_note(id, bookid, booktitle) {
+function select_note(id, bookid, booktitle, secret) {
+    var phrase;
+    if (secret == 'True') {
+        phrase=prompt("Please enter your secret key to get your note");              
+    }    
     document.getElementById("notebookchange").className = "btn btn-default dropdown-toggle btn-sm";
     document.getElementById("save_btn").className = "btn btn-primary";
-    document.getElementById("save_btn").href = "javascript:save_note('" + id + "','" + bookid + "','False');";
+    document.getElementById("save_btn").href = "javascript:save_note('" + id + "','" + bookid + "','False','" + secret + "');";
     document.getElementById("share_link").href = "/create_share/" + id;
     var arrow = ' <span class="caret"></span>'
     document.getElementById("notebookchange").innerHTML = booktitle + arrow;
     jQuery.post('/select_note', {
-        note_id: id
+        note_id: id,
+        phrase: phrase
     }).done(function (select_note) {
         $('#summernote').code(select_note['text']);
         var localTime = moment.utc(select_note['stamps']).toDate();
@@ -42,6 +52,26 @@ function caret_click(noteid, notetitle) {
 
 function caret_merge(noteid) {
     document.getElementById("merge_note_id").value = noteid;
+}
+
+function caret_encrypt(noteid) {
+    jQuery.confirm({
+        text: "This will encrypt your note with your own password/passphrase.  This is a secure way to store important information as we can not decrypt this if we wanted to.  We will then encrypt your note again (twice) our normal way.  We will never know your password.  Don't forget it!",
+        confirm: function() {
+            var phrase;
+            phrase=prompt("Please enter your secret key.  We can not retrieve this, so type very carefully.");
+            if (phrase!=null){
+                $.post('/secret_notes/' + noteid, {
+                    phrase: phrase
+                }).done(function(secret_notes) {
+                    location.reload();
+                });
+            }             
+        },
+            cancel: function() {
+                //Do Nothing
+            }
+    });
 }
 
 function caret_clickNB(bookid, booktitle) {
@@ -62,7 +92,6 @@ function newnoteid(ids) {
 function new_notebook_in_fc(fc_id) {
     jQuery('#new_notebook_in_fc').modal()
     document.getElementById("hidden_fc_id2").value = fc_id;
-
 }
 
 function changenotebook(bookid, booktitle) {
@@ -71,7 +100,10 @@ function changenotebook(bookid, booktitle) {
     var ref = document.getElementById("save_btn").href
     var patt1 = /[0-9]+/;
     var result = ref.match(patt1);
-    document.getElementById("save_btn").href = "javascript:save_note('" + result + "','" + bookid + "','True');";
+    var ref2 = ref.slice(-8);
+    var patt2 = /[a-zA-Z]+/;
+    var passphrase = ref2.match(patt2);
+    document.getElementById("save_btn").href = "javascript:save_note('" + result + "','" + bookid + "','True', '" + passphrase + "');";
 }
 jQuery(".confirm").confirm();
 jQuery(".confirmnb").confirm({
@@ -84,6 +116,10 @@ jQuery(".confirmfc").confirm({
 });
 jQuery(".confirmaccount").confirm({
     text: "Are you sure you want to delete your account?  This will remove everything and you will never be able to get it back.",
+    title: "Confirmation Required"
+});
+jQuery(".confirm_enc").confirm({
+    text: "This will encrypt your note with your own password.  This is a very secure way to store important information.  We will never know your password.  Don't forget it!",
     title: "Confirmation Required"
 });
 
