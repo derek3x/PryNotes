@@ -3,7 +3,7 @@
 {% for category, message in messages %}
 <div class="alert alert-dismissable alert-{{category}}">
     <button type="button" class="close" data-dismiss="alert">&times;</button>
-    {{ message }}
+    <textarea onclick="this.focus();this.select()" readonly="readonly" style="background-color: transparent; width: 90%; border: none; resize: none; -moz-appearance:none; outline:0px none transparent; background-image: none;">{{ message }}</textarea>
 </div>
 {% endfor %}
 {% endif %}
