@@ -10,3 +10,4 @@ beautifulsoup
 Image
 python-keyczar==0.71c
 Flask-WeasyPrint
+qrcode

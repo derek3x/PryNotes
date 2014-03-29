@@ -76,6 +76,7 @@
                                                 <li><a href="#" data-toggle="modal" onclick="caret_click('{{note.id}}','{{note.title}}')" data-target=".bs-modal-sm">Rename</a></li>
                                                 <li><a href="{{ url_for('delete', ids = note.id) }}" class="confirm">Delete</a></li>
                                                 <li><a href="#" data-toggle="modal" onclick="caret_merge('{{note.id}}')" data-target=".bs-modal-smerge">Merge Note</a></li>
+                                                <li><a href="#" data-toggle="modal" onclick="caret_encrypt('{{note.id}}')">Password Encrypt</a></li>
                                             </ul>
                                         </div>
                                         {% endif %}
@@ -164,17 +165,18 @@
                     {% endfor %}
                 </ul>
             </div>
-            <div class="btn-group pull-right">
+            <div class="btn-group btn-group-sm pull-right">
                 <form action="" method="post" enctype="multipart/form-data">
                     {{attach.hidden_tag()}}
                     {{attach.attach_it(id="upload", style="display:none")}}
-                    <a href="" type="button" class="btnxs btn-default dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-link"></span></a>
+                    <a href="" type="button" class="btnsm btn-default dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-share"></span></a>
                     <ul class="dropdown-menu" role="menu" style="position: relative">
-                        <li><a id="share_link" href="#">Create Shared Link</a></li>
+                        <li><a id="share_link" href="#"><span class="glyphicon glyphicon-link"></span> Create Shared Link</a></li>
+                        <li><a id="share_link_qr" href="#"><span class="glyphicon glyphicon-qrcode"></span> Create Shared QR Code</a></li>
                     </ul>
-                    <a id="to_pdf" href="#" type="button" class="btnxs btn-default"><span class="glyphicon glyphicon-download"></span></a>                    
-                    <a id="pintMe" href="#" type="button" onclick="openWin()" class="btnxs btn-default"><span class="glyphicon glyphicon-print"></span></a>
-                    <a id="clip" href="#" type="button" onclick="$('input[id=upload]').click();" class="btnxs btn-default"><span class="glyphicon glyphicon-paperclip"></span></a>
+                    <a id="to_pdf" href="#" type="button" class="btnsm btn-default"><span class="glyphicon glyphicon-download"></span></a>                    
+                    <a id="pintMe" href="#" type="button" onclick="openWin()" class="btnsm btn-default"><span class="glyphicon glyphicon-print"></span></a>
+                    <a id="clip" href="#" type="button" onclick="$('input[id=upload]').click();" class="btnsm btn-default"><span class="glyphicon glyphicon-paperclip"></span></a>
                 </form>
             </div>
             <form action="" method="post" name="editor">

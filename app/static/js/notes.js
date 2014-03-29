@@ -30,6 +30,7 @@ function select_note(id, bookid, booktitle, secret) {
     document.getElementById("save_btn").className = "btn btn-primary";
     document.getElementById("save_btn").href = "javascript:save_note('" + id + "','" + bookid + "','False','" + secret + "');";
     document.getElementById("share_link").href = "/create_share/" + id;
+    document.getElementById("share_link_qr").href = "/create_share_qr/" + id;
     var arrow = ' <span class="caret"></span>'
     document.getElementById("notebookchange").innerHTML = booktitle + arrow;
     jQuery.post('/select_note', {

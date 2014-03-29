@@ -21,6 +21,7 @@ import re
 import base64
 import BeautifulSoup
 import hashlib
+import qrcode
 import urllib
 
 from BeautifulSoup import Comment
@@ -31,10 +32,11 @@ from HTMLParser import HTMLParser
 from keyczar import keyczar
 from PIL import Image
 from random import randint
+from StringIO import StringIO
 
 from flask import jsonify
 from flask import flash, g, make_response, render_template, redirect
-from flask import request, send_from_directory, session, url_for
+from flask import request, send_from_directory, send_file, url_for
 from flask.ext.login import current_user, login_user
 from flask.ext.login import logout_user, login_required
 from flask.ext.sqlalchemy import get_debug_queries
@@ -553,6 +555,31 @@ def create_share(note_id):
         return redirect(url_for('members'))
     return redirect(url_for('members'))
 
+@app.route('/create_share_qr/<int:note_id>')
+@login_required
+def create_share_qr(note_id):
+    if note_id is None:
+        flash(
+            'Note not found.  If you think this is in error, please contact us.',
+            'danger')
+        return redirect(url_for('members'))
+    n = Notes.query.get(note_id)
+    if n.passphrased:
+        flash(
+            'Sorry this note is password encrypted.  We do not support sharing these yet.',
+            'danger')
+        return redirect(url_for('members'))        
+    if note_check_out(n):
+        key = str(n.id) + str(g.user.id)
+        link = hashlib.sha224(str(n.title) + "," + key).hexdigest()
+        fluff = randint(2, 98)
+        link = link + "-" + str(n.id) + "-" + str(fluff)
+        qr = qrcode.make('https://www.prynotes.com/shared_note/' + str(link))
+        img = StringIO()
+        qr.save(img)
+        img.seek(0)
+        return send_file(img, mimetype="image/png")
+    return redirect(url_for('members'))
 
 # Read the shares
 @app.route('/shared_note/<link>')
