@@ -36,7 +36,7 @@ from StringIO import StringIO
 
 from flask import jsonify
 from flask import flash, g, make_response, render_template, redirect
-from flask import request, send_from_directory, send_file, url_for
+from flask import request, send_from_directory, send_file, session, url_for
 from flask.ext.login import current_user, login_user
 from flask.ext.login import logout_user, login_required
 from flask.ext.sqlalchemy import get_debug_queries
