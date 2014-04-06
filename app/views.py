@@ -94,7 +94,7 @@ MODE = AES.MODE_CBC
 #=======================Favicon=================================#
 @app.route('/favicon.ico')
 @app.route('/favicon/<image>')
-def favicon(image):
+def favicon(image=None):
     if image:
         return send_from_directory(
             os.path.join(app.root_path, 'static'), image)
@@ -103,7 +103,6 @@ def favicon(image):
             'static'),
         'favicon.ico',
         mimetype='image/vnd.microsoft.icon')
-
 
 #=======================Webapp=================================#
 @app.route('/manifest.webapp')
@@ -640,6 +639,7 @@ def save_shared(link):
         # this is here due to real server having slightly different encryption
         # (padding)
         note_body = decrypt_it(n.body)
+        note_body = note_body.decode('utf8', errors='ignore')
         nn = Notes(title=n.title,
                    body=encrypt_it(note_body),
                    timestamp=datetime.utcnow(),
