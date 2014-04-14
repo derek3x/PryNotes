@@ -1202,7 +1202,7 @@ def filecabinet_check_out(fc):
     return True
 
 
-#=====================Terms and Privacy=====================#
+#=====================Terms, Privacy, and Donate=====================#
 @app.route('/terms')
 def terms():
     return render_template('terms.html')
@@ -1211,3 +1211,7 @@ def terms():
 @app.route('/privacy')
 def privacy():
     return render_template('privacy.html')
+
+@app.route('/donate')
+def donate():
+    return render_template('donate.html')

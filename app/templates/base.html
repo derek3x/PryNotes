@@ -66,9 +66,10 @@
     {% block content %}{% endblock %}
     <div class="container">
         <hr>
-        <p><a href="https://marketplace.firefox.com/app/prynotes" target="_blank"> <img src="/static/firefox.jpg">-Android, FireFox, and FireFox OS App</a></p>
-        <p>&copy; PryNotes 2014. Open Source: <a href="https://github.com/derek3x/PryNotes" target="_blank">GitHub.</a>  Powered by <a href="http://hackerwins.github.io/summernote/" target="_blank"> Summernote</a> and <a href="http://getbootstrap.com" target="_blank"> Bootstrap.</a></p>
-        <p><a href="{{url_for('terms')}}">Terms of use</a> and <a href="{{url_for('privacy')}}">Privacy Policy</a></p>
+        <p><a href="https://marketplace.firefox.com/app/prynotes" target="_blank"> <img src="/static/firefox.jpg">-Android, FireFox, and FireFox OS App</a>
+        <p>&copy; PryNotes 2014. Open Source: <a href="https://github.com/derek3x/PryNotes" target="_blank">GitHub.</a>  Powered by <a href="http://hackerwins.github.io/summernote/" target="_blank"> Summernote</a> and <a href="http://getbootstrap.com" target="_blank"> Bootstrap.  |  </a><a href="{{url_for('terms')}}">Terms of use</a> and <a href="{{url_for('privacy')}}">Privacy Policy.</a></p>
+        <p><a type="button" href="{{url_for('donate')}}" class="btn btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span> Donate</a></p>        
+        
     </div>  
     <!-- Javascript -->
     <script type="text/javascript" src="/static/js/jquery-latest.js"></script>

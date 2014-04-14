@@ -1,0 +1,15 @@
+ <!-- extend base layout -->
+{% extends "base.html" %}
+{% block content %}
+{% include 'flash.html' %}
+<div class="container">
+    <h2>Donations</h2>
+    <p>Running the server, SSL, and buying the domain cost money.  We full appreciate any donations as we want this service to be free forever.</p>
+    <p>Right now we only accept Bitcoin.  All of the money donated will go to support the website/developer.</p>
+    <hr>
+    <br>
+    <p><img src="static/img/bitcoin.svg"></p>
+    <p><b>bitcoin</b>:171one41Ev3t7xDGjzgBzkdbKbHTh7f5qT</p>
+    <p><a class="btn btn-info" href="bitcoin:171one41Ev3t7xDGjzgBzkdbKbHTh7f5qT">Direct Link</a>
+</div>
+{% endblock %} 
